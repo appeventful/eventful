@@ -1,0 +1,246 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- YARDIMCI FONKSİYONLAR ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email in ['eventful@eventfulapp.org', 'fatihkull17@gmail.com'] ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', 'user') == 'admin')
+      );
+    }
+
+    function isSuperAdmin() {
+      return isSignedIn() && (
+        request.auth.uid == 'tCNzvpT6w8geEJZ3dqRzlO9vZkg2' ||
+        request.auth.token.email in ['eventful@eventfulapp.org', 'fatihkull17@gmail.com'] ||
+        isAdmin()
+      );
+    }
+
+    function hasStaffRole() {
+      return isSignedIn() && (
+        request.auth.token.email in ['eventful@eventfulapp.org', 'fatihkull17@gmail.com'] ||
+        isSuperAdmin() ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', 'user') in ['admin', 'moderator', 'city_representative'])
+      );
+    }
+
+    // Topluluklar
+    match /communities/{communityId} {
+      allow read: if true;
+      allow create: if request.auth != null && request.auth.token.email == 'eventful@eventfulapp.org';
+      allow update: if request.auth != null && (
+        request.auth.token.email == 'eventful@eventfulapp.org' ||
+        request.auth.uid in resource.data.moderators ||
+        isAdmin()
+      );
+      allow delete: if request.auth != null && (
+        request.auth.token.email == 'eventful@eventfulapp.org' ||
+        isAdmin()
+      );
+
+      match /{allSubcollections=**} {
+        allow read: if true;
+        allow write: if isSignedIn();
+      }
+    }
+
+    // Topluluk Mesajları (Alternatif Koleksiyon)
+    match /community_messages/{communityId} {
+      allow read, write: if isSignedIn();
+      match /{allSubcollections=**} {
+        allow read, write: if isSignedIn();
+      }
+    }
+
+    match /active_guests/{userId} {
+      allow read, write: if true;
+    }
+
+    // --- KOLEKSİYONLAR ---
+
+    // Cihaz Sıfırlama İstekleri (Hatanın Kaynağı Burasıydı)
+    match /device_reset_requests/{id} {
+      allow create: if true;
+      allow read, write: if hasStaffRole() || (isSignedIn() && request.auth.token.email == 'eventful@eventfulapp.org');
+    }
+
+    // Geri Bildirimler
+    match /feedbacks/{feedbackId} {
+      allow create: if isSignedIn();
+      allow read, update, delete: if hasStaffRole();
+    }
+    match /feedback/{feedbackId} {
+      allow create: if isSignedIn();
+      allow read, update, delete: if hasStaffRole();
+    }
+
+    // Yardımlaşma Merkezi (Referans Talepleri)
+    match /reference_requests/{requestId} {
+      allow read, create, update: if isSignedIn();
+      allow delete: if isSignedIn() && (resource.data.userId == request.auth.uid || hasStaffRole());
+    }
+
+    // App Settings
+    match /app_settings/{document=**} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    // Kullanıcılar
+    match /users/{userId} {
+      allow list: if true;
+      allow read, get, create: if isSignedIn();
+
+      // 1. Staff (Admin/Moderator) her şeyi güncelleyebilir
+      allow update: if hasStaffRole();
+
+      // 2. Kullanıcı kendi profilini güncelleyebilir (Rol ve Founder status hariç)
+      allow update: if isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isFounder']);
+
+      // 3. Diğer kullanıcılar veya sistem sadece belirli sosyal/puan alanlarını güncelleyebilir
+      allow update: if isSignedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        'points', 'isRestricted', 'referenceParticipationCount', 'lastLogin',
+        'sentFriendRequests', 'friends', 'blockedUsers', 'fcmToken', 'followers', 'following',
+        'isGhostMode', 'notificationSettings', 'badges'
+      ]);
+
+      allow delete: if hasStaffRole();
+
+      match /notifications/{notificationId} {
+        allow read: if isOwner(userId) || hasStaffRole();
+        allow update, delete: if isOwner(userId) || hasStaffRole() || (isSignedIn() && resource.data.senderId == request.auth.uid);
+        allow create: if isSignedIn();
+      }
+      match /pointHistory/{id} { allow read, write: if isSignedIn(); }
+    }
+
+    // Etkinlikler
+    match /events/{eventId} {
+      allow read, list, get: if isSignedIn() || (resource.data.get('isApproved', false) == true && resource.data.get('isArchived', true) == false);
+      allow create: if isSignedIn();
+      allow update: if hasStaffRole() || (isSignedIn() && resource.data.creatorId == request.auth.uid);
+      allow update: if isSignedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        'participants', 'pendingParticipants', 'scoredUsers', 'attendanceYes', 'attendanceNo', 'joinedCount'
+      ]);
+      allow delete: if hasStaffRole() || (isSignedIn() && resource.data.creatorId == request.auth.uid);
+
+      match /comments/{commentId} {
+        allow read, create: if isSignedIn();
+        allow update: if isSignedIn() && (resource.data.userId == request.auth.uid || hasStaffRole());
+        allow delete: if isSignedIn() && (
+          resource.data.userId == request.auth.uid ||
+          hasStaffRole() ||
+          get(/databases/$(database)/documents/events/$(eventId)).data.creatorId == request.auth.uid
+        );
+      }
+
+      match /referenceCodes/{codeId} { allow read, write: if isSignedIn(); }
+      match /attendance/{attendanceId} { allow read, write: if isSignedIn(); }
+
+      match /photos/{photoId} {
+        allow read: if isSignedIn() && (resource.data.status == 'approved' || resource.data.userId == request.auth.uid || hasStaffRole());
+        allow create: if isSignedIn();
+        allow update, delete: if isSignedIn() && (resource.data.userId == request.auth.uid || hasStaffRole());
+      }
+
+      match /{allSubcollections=**} { allow read, write: if isSignedIn(); }
+    }
+
+    // Bildirimler (Top level)
+    match /notifications/{notificationId} {
+      allow read: if isSignedIn() && (
+        resource.data.recipientId == request.auth.uid ||
+        resource.data.senderId == request.auth.uid ||
+        hasStaffRole() ||
+        resource.data.recipientId == 'ADMIN'
+      );
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && (resource.data.recipientId == request.auth.uid || resource.data.senderId == request.auth.uid || hasStaffRole());
+    }
+
+    // Raporlar
+    match /reports/{reportId} {
+      allow create: if isSignedIn();
+      allow read, update, delete: if hasStaffRole();
+    }
+
+    // Admin İşlem Logları
+    match /admin_logs/{logId} {
+      allow read, write: if hasStaffRole();
+    }
+
+    // Kara Listeye Alınan Cihazlar
+    match /blacklisted_devices/{deviceId} {
+      allow read: if isSignedIn(); // Girişte kontrol için herkes okuyabilmeli (veya hasStaffRole)
+      allow write: if hasStaffRole();
+    }
+
+    // Sosyal Medya Planlayıcı
+    match /social_scheduler/{id} {
+      allow read, write: if hasStaffRole();
+    }
+
+    // Legal Texts
+    match /legal_texts/{id} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    // Push Notification Triggers
+    match /push_notifications/{id} {
+      allow read, write, list: if isSignedIn() && (
+        request.auth.uid == 'tCNzvpT6w8geEJZ3dqRzlO9vZkg2' ||
+        request.auth.token.email == 'eventful@eventfulapp.org' ||
+        hasStaffRole()
+      );
+      allow create: if isSignedIn();
+    }
+
+    // Hesap Hareketleri ve Loglar
+    match /account_actions/{id} { allow read, write: if hasStaffRole(); }
+    match /deleted_accounts_logs/{id} { allow read, write: if hasStaffRole(); }
+
+    // Dahili Sohbetler (Internal Staff Chats)
+    match /internal_chats/{chatId} {
+      allow read, write: if hasStaffRole();
+
+      match /messages/{msgId} {
+        allow read, write: if hasStaffRole();
+      }
+    }
+
+    // Destek Talepleri
+    match /support_requests/{requestId} {
+      allow create: if isSignedIn();
+      allow read, update, delete: if hasStaffRole();
+    }
+
+    // Diğer Sistem Koleksiyonları
+    match /score_history/{id} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || hasStaffRole());
+      allow create: if isSignedIn();
+    }
+    match /chats/{chatId} {
+      allow read, create, update: if isSignedIn();
+      match /messages/{msgId} {
+        allow read, create: if isSignedIn();
+        allow update, delete: if isSignedIn() && (request.auth.uid == resource.data.senderId || hasStaffRole());
+      }
+    }
+    match /event_ratings/{id} { allow read, create: if isSignedIn(); }
+    match /ratings/{id} { allow read, create: if isSignedIn(); }
+
+  }
+}

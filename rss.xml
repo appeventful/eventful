@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/">
+  <channel>
+    <language>tr</language>
+    <title>Etkinlik.io RSS Servisi</title>
+    <description>Etkinlik.io bir etkinlik keşif ve öneri motorudur.</description>
+    <image>
+      <url>https://ifyazilim.nyc3.digitaloceanspaces.com/EtkIO/PublicSite/Logo/logo.png</url>
+      <title>Etkinlik.io RSS Servisi</title>
+      <link>https://etkinlik.io</link>
+      <height>64</height>
+      <width>144</width>
+      <description>Etkinlik.io bir etkinlik keşif ve öneri motorudur.</description>
+    </image>
+    <pubDate>Mon, 27 Apr 2026 23:15:05 +0000</pubDate>
+    <lastBuildDate>Mon, 27 Apr 2026 23:15:05 +0000</lastBuildDate>
+    <generator>Laminas_Feed_Writer 2 (https://getlaminas.org)</generator>
+    <link>https://etkinlik.io</link>
+    <atom:link rel="self" type="application/rss+xml" href="https://etkinlik.io/rss/sorgu?turIds=28,15,24,5,21,4,10,22,11,2,8,19,9,7,3,20,1,14,27,13,12,16=sehirIds=53"/>
+    <item>
+      <title>Doğu Demirkol</title>
+      <description><![CDATA[Komedi sahnesinin en özgün ve dikkat çeken isimlerinden, Türkiye’nin yanı sıra Avrupa ve Amerika’da da kapalı gişe stand-up gösterilerine devam eden Doğu Demirkol, izleyicisiyle buluşmaya devam ediyor.Stand-up'ın yanı sıra, Ahlat Ağacı, Ölümlü Dünya ve Ba...]]></description>
+      <pubDate>Tue, 28 Apr 2026 20:30:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/280432/dogu-demirkol</link>
+      <guid>https://etkinlik.io/etkinlik/280432/dogu-demirkol</guid>
+      <enclosure type="image/avif" length="25985" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/dogu-demirkol-280432.avif"/>
+      <category><![CDATA[Sahne Sanatları]]></category>
+      <category><![CDATA[Tiyatro ve Gösteriler]]></category>
+      <category><![CDATA[Stand-up]]></category>
+      <content:encoded><![CDATA[Komedi sahnesinin en özgün ve dikkat çeken isimlerinden, Türkiye’nin yanı sıra Avrupa ve Amerika’da da kapalı gişe stand-up gösterilerine devam eden Doğu Demirkol, izleyicisiyle buluşmaya devam ediyor.<br /><br />Stand-up'ın yanı sıra, Ahlat Ağacı, Ölümlü Dünya ve Bayi Toplantısı filmlerindeki başarılı performansıyla da oyunculuğunu konuşturan Doğu Demirkol, "Doğu" dizisinin yeni sezon hazırlıklarına da başladı.<br /><br />Kendi yaşamından, gündelik hayattan ve bu topraklara özgü absürtlüklerden beslenen anlatımıyla seyirciyle güçlü bir bağ kuran Doğu Demirkol'un mütevazı olduğu kadar iddialı da olan tek kişilik gösterisi için hemen yerinizi ayırtın!]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Cambazın Cenazesi</title>
+      <description><![CDATA[CAMBAZIN CENAZESİBir takla daha atamadı; Cambaz Rasim dün gece öldü! Ancak bu ölüm, bir son değil. Çocukluğumuzdan hatırladığımız o unutulmaz hikayeleri, Ünal Yeter ve Bülent Seyran’ın usta oyunculuklarıyla sahnede yeniden hayat buluyor. Firuze Engin’in ö...]]></description>
+      <pubDate>Wed, 29 Apr 2026 20:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/279165/cambazin-cenazesi</link>
+      <guid>https://etkinlik.io/etkinlik/279165/cambazin-cenazesi</guid>
+      <enclosure type="image/jpg" length="49078" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/cambazin-cenazesi-279165.jpg"/>
+      <category><![CDATA[Sahne Sanatları]]></category>
+      <category><![CDATA[Tiyatro ve Gösteriler]]></category>
+      <content:encoded><![CDATA[<strong>CAMBAZIN CENAZESİ<br /></strong><br />Bir takla daha atamadı; Cambaz Rasim dün gece öldü! Ancak bu ölüm, bir son değil. Çocukluğumuzdan hatırladığımız o unutulmaz hikayeleri, Ünal Yeter ve Bülent Seyran’ın usta oyunculuklarıyla sahnede yeniden hayat buluyor. Firuze Engin’in ödüllü oyunu Cambazın Cenazesi, eğlenceli ve dokunaklı bir dille, kaybettiklerimiz ve kazandıklarımız arasında bir muhasebe yapmamıza olanak sağlıyor.<br /><br />Bize nefes olacak bu özel hikayeyi sakın kaçırmayın!<br /><br /><strong>Künye</strong><br /><strong>Yazar :</strong> Firuze Engin<br /><strong>Yöneten </strong>: Eyüp Emre Uçaray<br />Yapım Batı Performans Sanatları<br /><strong>Yapımcı</strong>: Şenay Cevrioğlu<br /><strong>Işık Tasarım: </strong>Mustafa Algül<br /><strong>Kostüm Tasarım </strong>: Cihangir Arslan<br /><strong>Dekor Tasarım </strong>: Sırrı Topraktepe<br /><strong>Afiş Fotoğraf ve Afiş Tasarım</strong>: Ufuk Cebeci]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Erol Evgin</title>
+      <description><![CDATA[18 Aralık Perşembe saat 12:00'da satışta!Türk pop müziğinin efsane ismi Erol Evgin, 2026 yılında şehrine geliyor!Şarkıları hafızalara kazınan usta sanatçı, her konserde müzikseverleri zamanda keyifli bir yolculuğa çıkaracak. Zarafeti, duruşu ve sıcak ener...]]></description>
+      <pubDate>Wed, 29 Apr 2026 20:30:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/279328/erol-evgin</link>
+      <guid>https://etkinlik.io/etkinlik/279328/erol-evgin</guid>
+      <enclosure type="image/png" length="467122" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/erol-evgin-279328.png"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Pop Müzik]]></category>
+      <content:encoded><![CDATA[<p><strong><span lang="TR">18 Aralık Perşembe saat 12:00'da satışta!<br /><br />Türk pop müziğinin efsane ismi Erol Evgin, 2026 yılında şehrine geliyor!</span></strong></p><p><span lang="TR">Şarkıları hafızalara kazınan usta sanatçı, her konserde müzikseverleri zamanda keyifli bir yolculuğa çıkaracak. Zarafeti, duruşu ve sıcak enerjisiyle milyonların kalbinde taht kuran Evgin, gittiği her şehirde yine unutulmaz bir atmosfer yaratacak.</span></p><p><span lang="TR">Erol Evgin’le dolu dolu bir müzik gecesi için yerinizi şimdiden ayırtın!</span></p><p><strong><span lang="TR">Turne Takvimi:</span></strong><span lang="TR"><br />7 Şubat 2026 • Cumartesi – ANKARA / Congresium<br />12 Şubat 2026 • Perşembe – DENİZLİ / Nihat Zeybekçi KKM<br />28 Mart 2026 • Cumartesi – GAZİANTEP / Şahinbey Kültür Merkezi<br />7 Nisan 2026 • Salı – İSTANBUL / Zorlu PSM - Tukcell Sahnesi<br />10 Nisan 2026 • Cuma – KAYSERİ / Erciyes Kültür Merkezi<br />29 Nisan 2026 • Çarşamba – KONYA / Selçuklu Kongre Merkezi</span></p><div><span lang="TR"><br /></span></div>]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Ahmet Aslan - Solo Konser</title>
+      <description><![CDATA[Anadolu müziğini batı enstrümanlarıyla birlikte kullanan Ahmet Aslan, müzikseverlerle buluşuyor.1971 yılında Dersim’de dünyaya gelen Ahmet Aslan, 1993 - 1996 yılları arasında İstanbul Teknik Üniversitesi Konservatuarı'nda eğitim gördü. 1996'dan beri Alman...]]></description>
+      <pubDate>Fri, 01 May 2026 20:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/281398/ahmet-aslan-solo-konser</link>
+      <guid>https://etkinlik.io/etkinlik/281398/ahmet-aslan-solo-konser</guid>
+      <enclosure type="image/jpg" length="37842" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/ahmet-aslan-solo-konser-281398.jpg"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Türk Sanat - Halk Müziği]]></category>
+      <content:encoded><![CDATA[<strong>Anadolu müziğini batı enstrümanlarıyla birlikte kullanan Ahmet Aslan, müzikseverlerle buluşuyor.</strong><br /><br />1971 yılında Dersim’de dünyaya gelen Ahmet Aslan, 1993 - 1996 yılları arasında İstanbul Teknik Üniversitesi Konservatuarı'nda eğitim gördü. 1996'dan beri Almanya'da yaşamını sürdüren Aslan’ın, 2003 yılında “Va u Waxt (Rüzgar ve Zaman)” adlı ilk solo albümü yayınlanmıştır. İlk albümüyle çok dikkat çeken müzisyen, bu albümün ardından 2008 yılında “Veyve Milaketu (Meleklerin Dansı)” isimli yeni albümünü dinleyecilerine sunmuştur. 2008-2012 yılları arasında Dünya Müziği üzerine eğitim görmüştür.<br /><br />Bu eğitimini Codarts University for the Arts (Rotterdam Dünya Müzik Akademisi) adlı okulda, lisans düzeyinde tamamlamıştır. Eğitim gördüğü zaman aralığında Klasik Gitar ve Bağlama (DI-TAR - Gitar-Saz) kombinasyonu ile kendi kaynaklarından oluşan bir enstrüman icra etmiştir. Bu enstrümanın oluşum aşamasında öncelikle birçok farklı grafik tasarımı ile yola çıkıp daha sonra prototipler deneyen Aslan, öğretmenleri (Martin Greve, Paco Pena) ve diğer müzisyenler (Carlo Domeniconi, Antonis Anissegos) ile yaptığı görüşmelerden sonra, enstrüman yapımcısı  Süleyman Aslan (Dutar Saz Evi) ile birlikte bu enstrümanın ilk örneğini çalışarak,  “deneysel” olarak nitelendirilen Di-Tar’ı  telli müzik aletleri arasına kazandırmıştır. Yeni enstrümanı ile stüdyoya giren sanatçı, 2015 yılında yayınladığı Na-Mükemmel (Imperfect) adlı albümüyle, yeni enstrümanın getirdiği özgün tarz ile eserlerini dinleyicileriyle paylaştı.Bu albümüyle büyük yankı uyandıran Aslan, bu süreçle beraber hem farklı tarzdaki önemli müzik insanları ile hem de solo performanslarıyla birçok single yayınladı. Son olarak 2019 yılında çıkardığı Dornağe Budelay (Budala Aurası) isimli albümünün ardından halen günümüzde halk ezgilerini kendine has “deneysel” tarzıyla yorumlamaya devam ediyor.]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Ters Yüz Kayıp Arkadaş</title>
+      <description><![CDATA[Ters Yüz Kayıp Arkadaş Tiyatro OyunuTers Yüz’te artık sahnede!Rengarenk ışıklarla duyguların dünyası Başkent Kültür Sanat Tiyatrosu farkıyla sahneye taşınıyor! Riley'nin zihin dünyasında renkli bir kontrol odasında Neşe her şeyi mükemmel yönetmeye çalışır...]]></description>
+      <pubDate>Sat, 02 May 2026 13:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/282906/ters-yuz-kayip-arkadas</link>
+      <guid>https://etkinlik.io/etkinlik/282906/ters-yuz-kayip-arkadas</guid>
+      <enclosure type="image/avif" length="200152" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/4/ters-yuz-kayip-arkadas-282906.avif"/>
+      <category><![CDATA[Sahne Sanatları]]></category>
+      <category><![CDATA[Çocuk Tiyatrosu]]></category>
+      <content:encoded><![CDATA[<p class="gmail-yds_cinema_movie_thread_info" dir="ltr"><span><strong>Ters Yüz Kayıp Arkadaş Tiyatro Oyunu</strong></span></p><p class="gmail-yds_cinema_movie_thread_info" dir="ltr"><span>Ters Yüz’te artık sahnede!</span></p><p class="gmail-yds_cinema_movie_thread_info" dir="ltr"><span>Rengarenk ışıklarla duyguların dünyası Başkent Kültür Sanat Tiyatrosu farkıyla sahneye taşınıyor! </span></p><p class="gmail-yds_cinema_movie_thread_info" dir="ltr"><span>Riley'nin zihin dünyasında renkli bir kontrol odasında Neşe her şeyi mükemmel yönetmeye çalışırken işler planlandığı gibi gitmez… Yeni bir şehre taşınan Riley üzülmeye başlayınca, Üzüntü istemeden kontrolü ele alır!</span></p><p class="gmail-yds_cinema_movie_thread_info" dir="ltr"><span>Bir anda Neşe ve Üzüntü kaybolur, kumanda Öfke, Korku ve Tiksintinin eline geçer. Alarm sesleri, karışan duygular ve birbirine giren anılar arasında büyük bir kaos başlar. Riley'nin zihninde her şey kontrolden çıkmıştır!</span></p><p class="gmail-yds_cinema_movie_thread_info" dir="ltr"><span>Neşe geri dönüş yolunu ararken çok önemli bir sırrı keşfeder:</span></p><p class="gmail-yds_cinema_movie_thread_info" dir="ltr"><span>"Her duygu önemlidir."</span></p><p class="gmail-yds_cinema_movie_thread_info" dir="ltr"><span>Bu eğlenceli ve tempolu oyun, seyirciyi “Acaba kontrol odasına kim geçecek?” sorusuyla merakta bırakırken, kahkaha ve duyguyu aynı sahnede buluşturur. </span></p><p class="gmail-yds_cinema_movie_thread_info" dir="ltr"><span> </span></p><p class="gmail-yds_cinema_movie_thread_info" dir="ltr"><strong>Oyuncular:</strong> İrem Şeyma TOPSAKAL, Deniz ERTÜRK, Ebru ALTUN,  İbrahim ERKAN,  Halil Fevzi ALTUNBULAK, Ece Naz KARATAŞ, Volkan DEMİRER, İsmail Can KARADAĞ, Damla Buse ARIK, Cemile YÜCEL, Bülent ÜNSÜR,</p><p class="gmail-yds_cinema_movie_thread_info" dir="ltr"><strong>Yazan:</strong> İrem Şeyma TOPSAKAL<br /><strong>Yöneten:</strong> Abdullah YÜKSEKCAN<br /><strong>Yönetmen Yardımcısı:</strong> İrem Şeyma TOPSAKAL<br /><strong>Sahne Amiri: </strong>İsmail Can KARADAĞ, İbrahim ERKAN<br /><strong>Kondüvit:</strong> Murat Kılıç<br /><strong>Işık Kumanda:</strong> Fikret KURT<br /><strong>Teknik Sorumlu</strong>: Murat KILIÇ<br /><strong>Yapım: </strong>Sahneser Medya Yapım - Başkent Kültür Sanat Tiyatrosu<br /><strong>Etkinlik Türü</strong> Çocuk Oyunu<br /><strong>Yaş Sınırı</strong> 3-12</p>]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Sibel Can Gala</title>
+      <description><![CDATA[Dedeman Konya Hotel & Convetion Center sahnesinde Muhteşem Gala; 10 Ocak akşamı Sibel Can sevilen şarkıları ve unutulmaz sahne performansı ile sizlerle buluşmaya hazırlanıyor...20:00 Kapı Açılış20:30 - 22:00 Ön Sahne22:30 - 00:30 Sibel Can SahnesiBilet fi...]]></description>
+      <pubDate>Sat, 02 May 2026 20:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/279452/sibel-can-gala</link>
+      <guid>https://etkinlik.io/etkinlik/279452/sibel-can-gala</guid>
+      <enclosure type="image/avif" length="38019" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/sibel-can-gala-279452.avif"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Diğer]]></category>
+      <content:encoded><![CDATA[<strong>Dedeman Konya Hotel &amp; Convetion Center sahnesinde Muhteşem Gala; 10 Ocak akşamı Sibel Can sevilen şarkıları ve unutulmaz sahne performansı ile sizlerle buluşmaya hazırlanıyor...</strong><br /><p>20:00 <strong>Kapı Açılış</strong><br />20:30 - 22:00 <strong>Ön Sahne</strong><br />22:30 - 00:30 <strong>Sibel Can Sahnesi<br /></strong><strong><br /><strong><em>Bilet fiyatlarında;</em></strong><br /></strong><em>Sahne Önü ve Vip Kategorisine Gala Yemeği + Limitsiz Soft , Yerli içecek dahildir.<br /></em><em>1-2-3-4-5 Kategorilere <em>Gala Yemeği + Limitsiz Soft , Yerli  içecek dahildir.<br /><br />** Rezervasyon ve diğer detayları için 0552 535 90 00 - 0507 707 81 70  iletişime geçebilirsiniz. **<br /></em></em></p>]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Fosforlu Cevriye Müzikali</title>
+      <description><![CDATA[Fosforlu Cevriye Müzikali Tiyatro OyunuDenizin kucağında bir sokak çocuğu olarak büyüyen, Galata mevkiinde karnını doyurabilmek için “icra-i sanat” eyleyen Güzelliği dillere destan, yeri geldiğinde mangalda kül bırakmayan, Kendi güzelliğini görebilmek, ay...]]></description>
+      <pubDate>Sat, 02 May 2026 20:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/282904/fosforlu-cevriye-muzikali</link>
+      <guid>https://etkinlik.io/etkinlik/282904/fosforlu-cevriye-muzikali</guid>
+      <enclosure type="image/avif" length="128541" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/4/fosforlu-cevriye-muzikali-282904.avif"/>
+      <category><![CDATA[Sahne Sanatları]]></category>
+      <category><![CDATA[Tiyatro ve Gösteriler]]></category>
+      <content:encoded><![CDATA[<p><strong>Fosforlu Cevriye Müzikali Tiyatro Oyunu</strong></p><p>Denizin kucağında bir sokak çocuğu olarak büyüyen, Galata mevkiinde karnını doyurabilmek için “icra-i sanat” eyleyen Güzelliği dillere destan, yeri geldiğinde mangalda kül bırakmayan, Kendi güzelliğini görebilmek, aynaya bakabilmek için karakola düşen, Anne babasını tanımadığı için gökteki yıldızlardan doğduğuna inanacak kadar saf bir kadın Fosforlu Cevriye…</p><p>Fosforlu Cevriye, sıradan bir sokak kızı değil aslında İstanbul sokaklarının ta kendisidir. Hastalık ve soğuktan ölüme yaklaştığı o gece, karşısına çıkan esrarengiz bir Adam sayesinde hayata ve kara sevdaya tutunur. Cevriye’nin daha önce tanıdığı erkeklere hiç benzemeyen ve ona “siz” diye hitap eden bu Adam aslında gizli yaşayan bir idam mahkûmudur. Hayatında kimse Cevriye'ye, hastalığında kendisine bakan, itina eden, ilk kez bir kadın olduğunu hissettiren bu adam gibi davranmamıştır. Bu yabancıyı tanımasıyla birlikte Cevriye daha önce hiç hissetmediği, hiç bilmediği duyguları tadacak ve sevmeyi, tutsaklığı öğrenecektir. Onu tanıdığı günden sonra artık bambaşka bir “insan” olmuştur. Hapis, sürgün, aradan geçen zaman ve türlü belalara rağmen bu aşktan vazgeçmeyen Cevriye, sevdiği için her şeyi göze alacaktır. Hayata sonsuz derecede bağlı olan Fosforlu Cevriye, kaymasın diye yıldızını gökyüzüne çakmak isterken, hayat ona ne sürpriz hazırlıyor?</p><p>Oyunda 1930-40’lı yılların İstanbul’u zengin tasvirleriyle Müzikal Formatıyla sunuluyor. Mahallelerin arka sokaklarında, hapishanelerinde, batakhanelerinde hayata tutunmaya çalışan kadınların, annelerin, çocukların ve afilli delikanlıların otoriteyle olan ilişkisi çarpıcı öykülerle aktarılıyor.</p><p>"Bu yapıtın sahnelenme hakkı Yazar Suat DERVİŞ temsilcisi ONK Ajans Fikir ve Sanat Eserleri A.Ş.'den devralınmıştır."</p><p><strong>Etkinlik Türü:</strong> Müzikal, Dram, 2 Perde<br /> <strong>Süre:</strong> 150 dakika<br /> <strong>Yaş Sınırı:</strong> 15+</p><p><strong>Oyuncular:</strong><br /> İrem Şeyma TOPSAKAL<br /> İsmail Can KARADAĞ<br /> Cemile YÜCEL<br /> Bülent ÜNSÜR<br /> Mert YELDAN<br /> İbrahim ERKAN<br /> Ece Naz KARATAŞ<br /> Ebru ALTUN<br /> Deniz ERTÜRK<br /> Volkan DEMİRER<br /> Halil Fevzi ALTUNBULAK<br /> Damla Buse ARIK</p><p><strong>Eser:</strong> Suat DERVİŞ<br /> <strong>Uyarlayan:</strong> Gülriz SURURİ</p><p><strong>Yöneten:</strong> Abdullah YÜKSEKCAN<br /> <strong>Yönetmen Yardımcısı:</strong> İrem Şeyma TOPSAKAL<br /> <strong>Müzik Direktörü:</strong> Nuri SARP<br /> <strong>Koreograf:</strong> Nilgün KARAN<br /> <strong>Sahne Amiri:</strong> İsmail Can KARADAĞ, İbrahim ERKAN<br /> <strong>Kulis Şefi:</strong> Mert YELDAN<br /> <strong>Işık Kumanda:</strong> Fikret KURT</p><p><strong>Sahneser Medya Yapım Prodüksiyon</strong></p><p><strong>Abdullah YÜKSEKCAN </strong>/ Genel Sanat Yönetmeni</p>]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Hikayeden Adamlar - Kırık Kalpler Partisi</title>
+      <description><![CDATA[Hikayeden Adamlar; mizahı, hafif melankoliyi ve bol müziği aynı sahnede buluşturuyor: bazen gülüyorsun, bazen “bu şarkı tam ben” diyorsun, bazen de hikâyenin içinden kendini buluyorsun.Rutinleri bir akşamlığına kapatıyoruz: birlikte söyle, birlikte gül, b...]]></description>
+      <pubDate>Sun, 03 May 2026 20:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/282207/hikayeden-adamlar-kirik-kalpler-partisi</link>
+      <guid>https://etkinlik.io/etkinlik/282207/hikayeden-adamlar-kirik-kalpler-partisi</guid>
+      <enclosure type="image/jpg" length="46910" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/4/hikayeden-adamlar-kirik-kalpler-partisi-282207.jpg"/>
+      <category><![CDATA[Sahne Sanatları]]></category>
+      <category><![CDATA[Tiyatro ve Gösteriler]]></category>
+      <content:encoded><![CDATA[Hikayeden Adamlar; mizahı, hafif melankoliyi ve bol müziği aynı sahnede buluşturuyor: bazen gülüyorsun, bazen “bu şarkı tam ben” diyorsun, bazen de hikâyenin içinden kendini buluyorsun.Rutinleri bir akşamlığına kapatıyoruz: birlikte söyle, birlikte gül, birlikte rahatla.]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Konfest - Kombine</title>
+      <description><![CDATA[Lineup1. Gün: Sagopa Kajmer – Wegh – Can Ozan2. Gün: Çakal – Şam – Perdenin Ardındakiler]]></description>
+      <pubDate>Fri, 08 May 2026 16:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/279964/konfest-kombine</link>
+      <guid>https://etkinlik.io/etkinlik/279964/konfest-kombine</guid>
+      <enclosure type="image/avif" length="45699" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/konfest-kombine-279964.avif"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Parti & Canlı Müzik]]></category>
+      <category><![CDATA[Canlı Müzik]]></category>
+      <category><![CDATA[Parti]]></category>
+      <content:encoded><![CDATA[Lineup<br />1. Gün: Sagopa Kajmer – Wegh – Can Ozan<br />2. Gün: Çakal – Şam – Perdenin Ardındakiler]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Konfest - 8 Mayıs</title>
+      <description><![CDATA[Lineup: Sagopa Kajmer – Wegh – Can Ozan]]></description>
+      <pubDate>Fri, 08 May 2026 16:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/279965/konfest-8-mayis</link>
+      <guid>https://etkinlik.io/etkinlik/279965/konfest-8-mayis</guid>
+      <enclosure type="image/avif" length="45699" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/konfest-8-mayis-279965.avif"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Parti & Canlı Müzik]]></category>
+      <category><![CDATA[Canlı Müzik]]></category>
+      <category><![CDATA[Parti]]></category>
+      <content:encoded><![CDATA[Lineup: Sagopa Kajmer – Wegh – Can Ozan<br /><br />]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Mustafa Keser Sizlerle - Konya</title>
+      <description><![CDATA[Türk Sanat Müziği’nin duayen ismi Mustafa Keser, yıllarca televizyon kanallarında sürdürdüğü “Mustafa Keser Sizlerle” adlı müzik programını, kendisinin düzenleyeceği konser etkinlikleriyle tekrar hayranlarıyla buluşturmaya hazırlanıyor. Etkinliklerin ilk ...]]></description>
+      <pubDate>Fri, 08 May 2026 21:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/280065/mustafa-keser-sizlerle-konya</link>
+      <guid>https://etkinlik.io/etkinlik/280065/mustafa-keser-sizlerle-konya</guid>
+      <enclosure type="image/png" length="377991" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/mustafa-keser-sizlerle-konya-280065.png"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Türk Sanat - Halk Müziği]]></category>
+      <content:encoded><![CDATA[<p>Türk Sanat Müziği’nin duayen ismi <strong>Mustafa Keser</strong>, yıllarca televizyon kanallarında sürdürdüğü “<strong>Mustafa Keser Sizlerle</strong>” adlı müzik programını, kendisinin düzenleyeceği konser etkinlikleriyle tekrar hayranlarıyla buluşturmaya hazırlanıyor. Etkinliklerin ilk etabını İstanbul’da gerçekleştirecek olan sanatçı, Türkiye genelinde bu etkinlikleri sürdürmeyi planlıyor. Güçlü sesi ve sahnedeki enerjisiyle dinleyicilerine müzik ziyafeti sunacak.<br /> <br /> <strong>8 Mayıs 2026 Cuma</strong> akşamı <strong>Selçuklu Kongre Merkezi</strong>’nde gerçekleşecek bu özel konserde <strong>Mustafa Keser</strong>, unutulmaya yüz tutmuş Klasik Türk Müziği eserlerini sevenleri için seslendirecek ve onlara yine unutulmaz bir akşam yaşatacak.</p>]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Küsmeyen Eşler</title>
+      <description><![CDATA[Uzm. Aile Danışmanı SEHER KÜMÜŞ ile“Küsmeyen Eşler” seminerinde, duvarlar yerine köprü kurmanın yollarını öğren! 9 Mayıs'da Konya Bera Hotel'de 13:30 - 16:30 arasında gerçekleşecektir.Bu seminerde;Kırgınlıkları sağlıklı şekilde aşmayıMizaç farklarını avan...]]></description>
+      <pubDate>Sat, 09 May 2026 13:30:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/282227/kusmeyen-esler</link>
+      <guid>https://etkinlik.io/etkinlik/282227/kusmeyen-esler</guid>
+      <enclosure type="image/jpg" length="110858" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/4/kusmeyen-esler-282227.jpg"/>
+      <category><![CDATA[Konferans]]></category>
+      <category><![CDATA[Diğer]]></category>
+      <content:encoded><![CDATA[Uzm. Aile Danışmanı SEHER KÜMÜŞ ile“Küsmeyen Eşler” seminerinde, duvarlar yerine köprü kurmanın yollarını öğren! <br /><br />9 Mayıs'da Konya Bera Hotel'de 13:30 - 16:30 arasında gerçekleşecektir.<br /><br />Bu seminerde;<br />Kırgınlıkları sağlıklı şekilde aşmayı<br />Mizaç farklarını avantaja çevirmeyi<br />Evliliğini daha mutlu ve huzurlu bir yuvaya dönüştürmeyi keşfedeceksin.<br /><br />Evliliğinde küsmek yerine anlamayı, konuşmayı ve çözüm bulmayı öğrenmeye var mısınız?<br /><br />Yüz yüze yapılacak olan seminerimize yurt içi ve yurtdışından gelen yoğun istek üzerine 9 Mayıs'da online zoom üzerinden de katılım sağlayabilirsiniz.]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Konfest - 9 Mayıs</title>
+      <description><![CDATA[Lineup: Çakal – Şam – Perdenin Ardındakiler]]></description>
+      <pubDate>Sat, 09 May 2026 16:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/280025/konfest-9-mayis</link>
+      <guid>https://etkinlik.io/etkinlik/280025/konfest-9-mayis</guid>
+      <enclosure type="image/avif" length="45699" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/konfest-9-mayis-280025.avif"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Parti & Canlı Müzik]]></category>
+      <category><![CDATA[Canlı Müzik]]></category>
+      <category><![CDATA[Parti]]></category>
+      <content:encoded><![CDATA[Lineup: Çakal – Şam – Perdenin Ardındakiler<br /><br />]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Haybeden Gerçeküstü Aşk</title>
+      <description><![CDATA[Yılmaz Erdoğan’ın kaleme aldığı “Haybeden Gerçeküstü Konuşmalar” adlı kitaptan uyarlanan iki kişilik oyun, kadın erkek ilişkisinin başlangıcından bittiği yere kadar olan sürecini konu alıyor.Gözlemleriyle ve tespitleriyle her bireyin kendinden bişeyler bu...]]></description>
+      <pubDate>Sat, 09 May 2026 20:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/274798/haybeden-gercekustu-ask</link>
+      <guid>https://etkinlik.io/etkinlik/274798/haybeden-gercekustu-ask</guid>
+      <enclosure type="image/jpg" length="51387" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/1/haybeden-gercekustu-ask-274798.jpg"/>
+      <category><![CDATA[Sahne Sanatları]]></category>
+      <category><![CDATA[Tiyatro ve Gösteriler]]></category>
+      <content:encoded><![CDATA[<strong>Yılmaz Erdoğan’ın kaleme aldığı “Haybeden Gerçeküstü Konuşmalar” adlı kitaptan uyarlanan iki kişilik oyun, kadın erkek ilişkisinin başlangıcından bittiği yere kadar olan sürecini konu alıyor.</strong><br /><br />Gözlemleriyle ve tespitleriyle her bireyin kendinden bişeyler bulabileceği günümüz ilişkilerine atıfta bulunan bu komedi oyunu mizahi bir dille seyircisine eğlenceli dakikalar geçirtmektedir. Kadın ve erkeğin ilişkisel evrimini net bir şekilde ortaya koyarken trajikomik durumunu da gözler önüne seriyor. Bu oyunda yaşanan bir ilişki değil aslında her ilişki…<br /><br />Yazan: Yılmaz Erdoğan<br />Yöneten: Cengiz Sezgin<br /><br />Yapım : KYB MEDYA]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Dombay Ensemble Kafkas Dans Gecesi</title>
+      <description><![CDATA[Dombay Ensemble Kafkas Dans Gecesi, 9 Mayıs'ta Selçuklu Kongre Merkezi Anadolu Sahne!sinde..]]></description>
+      <pubDate>Sat, 09 May 2026 21:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/282225/dombay-ensemble-kafkas-dans-gecesi</link>
+      <guid>https://etkinlik.io/etkinlik/282225/dombay-ensemble-kafkas-dans-gecesi</guid>
+      <enclosure type="image/avif" length="38911" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/4/dombay-ensemble-kafkas-dans-gecesi-282225.avif"/>
+      <category><![CDATA[Sahne Sanatları]]></category>
+      <category><![CDATA[Dans ve Müzikal Gösteriler]]></category>
+      <category><![CDATA[Bale Dans]]></category>
+      <content:encoded><![CDATA[Dombay Ensemble Kafkas Dans Gecesi, 9 Mayıs'ta Selçuklu Kongre Merkezi Anadolu Sahne!sinde..]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Kadınlık Bizde Kalsın - Sevme Beni</title>
+      <description><![CDATA[İlk kez 1993 yılında Yılmaz Erdoğan tarafından yazılan ve rekor düzeyde seyirci sayısına ulaşan “Kadınlık Bizde Kalsın”, uzun yıllar kadınların sesi olmaya devam etti. 31 yıl sonra Yılmaz Erdoğan tarafından yeniden yazılan oyun “Kadınlık Bizde Kalsın / Se...]]></description>
+      <pubDate>Sun, 10 May 2026 20:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/280095/kadinlik-bizde-kalsin-sevme-beni</link>
+      <guid>https://etkinlik.io/etkinlik/280095/kadinlik-bizde-kalsin-sevme-beni</guid>
+      <enclosure type="image/jpg" length="92595" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/kadinlik-bizde-kalsin-sevme-beni-280095.jpg"/>
+      <category><![CDATA[Sahne Sanatları]]></category>
+      <category><![CDATA[Tiyatro ve Gösteriler]]></category>
+      <content:encoded><![CDATA[İlk kez 1993 yılında Yılmaz Erdoğan tarafından yazılan ve rekor düzeyde seyirci sayısına ulaşan “Kadınlık Bizde Kalsın”, uzun yıllar kadınların sesi olmaya devam etti. 31 yıl sonra Yılmaz Erdoğan tarafından yeniden yazılan oyun “Kadınlık Bizde Kalsın / Sevme Beni” adıyla tekrar sahnelere dönüyor.<br /><br />Geçen yıllar kadın cinayetlerinin, kadına karşı şiddettin, tacizin, istismarın önüne geçemedi. Daha özgür, daha eşit yarınlar ümidiyle Yasemin Yalçın tekrar seyirciyle buluşuyor.<br /><br />“Yani sen iyi bir çocuğa benziyorsun… Ama hepiniz bir ara iyi bir çocuktunuz, en azından iyi bir çocuğa benziyordunuz. Biz kadınlar… artık hiçbirinizin bizi sevmesini istemiyoruz… Siz insan gibi sevmeyi öğreninceye kadar…”<br /><br />Künye: <br />Yazan: Yılmaz Erdoğan<br />Yöneten: Özer Arslan<br />Oyuncular:<br />Yasemin Yalçın<br />İlyas İlbey<br />Eylül İlbey<br />Cenk Tunalı<br />Yasemin Çıtak<br />Uğur Ercan<br />Bilge Bilge<br />Buket Çelik<br />Müzikler: Çiğdem Erken <br />Dans - Koreografi: Eylül İlbey <br />Dekor Tasarımı: Batuhan Bozcaada <br />Dekor Uygulama: Sırrı Topraktepe <br />Kostüm Uygulama: Tümay Tüzüner <br />Işık Ve Ses Kumanda: Mustafa Yavuz <br />Oyun Asistanı: Büşra Öztürk <br />Afiş Tasarım: Galip Aksular <br />Afiş Fotoğraf: Sinan Arslan <br />Yapım Koordinatörü: Ferya Oktay <br />Yapım: Vigor Kültür Sanat – Yasemin Yalçın Tiyatrosu <br />Yapımcı: Serdar Akkaya – İlyas İlbey]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Ruh Öküzüm</title>
+      <description><![CDATA[8. sezonuyla Türkiye’nin dört bir yanında sahne alan ‘Ruh Öküzüm’ Büyük Anadolu Turnesi’nde..Kadın - Erkek ilişkileri üzerine tatlı bir komedi hikayesi olan bu komedi oyunu ile hem çok eğlenecek, hem de kendinizden çok şey bulacaksınız!Erkan Karadeniz’in ...]]></description>
+      <pubDate>Mon, 11 May 2026 20:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/280209/ruh-okuzum</link>
+      <guid>https://etkinlik.io/etkinlik/280209/ruh-okuzum</guid>
+      <enclosure type="image/avif" length="96260" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/ruh-okuzum-280209.avif"/>
+      <category><![CDATA[Sahne Sanatları]]></category>
+      <category><![CDATA[Tiyatro ve Gösteriler]]></category>
+      <content:encoded><![CDATA[<div><p><strong>8. sezonuyla Türkiye’nin dört bir yanında sahne alan ‘Ruh Öküzüm’ Büyük Anadolu Turnesi’nde..</strong><br /><br />Kadın - Erkek ilişkileri üzerine tatlı bir komedi hikayesi olan bu komedi oyunu ile hem çok eğlenecek, hem de kendinizden çok şey bulacaksınız!<br /><br />Erkan Karadeniz’in yazıp yönettiği ve Tuğçe Karabayır ile beraber sahne aldıkları ‘Ruh Öküzüm’ seyircisini bekliyor!<br /><br /><strong>Yazan:</strong> Erkan KARADENİZ<br /><strong>Oyuncular:</strong> Tuğçe Karabayır, Erkan Karadeniz<br /><strong>Afiş Tasarım:</strong> Emre Kaya<br /><strong>Yapım: </strong>Finitolar Yapım</p></div><div><p>120 dk - 2 perde</p></div><div><p>+13</p></div>]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>BİR AİLE PROVASI: YAŞAYIN GİTSİN</title>
+      <description><![CDATA[‘BİR AİLE PROVASI: YAŞAYIN GİTSİN’ TURNEDE! Süre: Tek perde / 90 dk. Yaş sınırı: +13Oyuncular: Devin Özgür Çınar, Fatih Özkan, Hasibe Eren, Sacide Taşaner, Süleyman Kara, Ümit Beste KargınBKM'DEN YENİ, EĞLENCESİ BOL VE ÇOK TANIDIK BİR AİLE HİKAYESİ! ‘BİR ...]]></description>
+      <pubDate>Tue, 12 May 2026 20:30:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/282009/bir-aile-provasi-yasayin-gitsin</link>
+      <guid>https://etkinlik.io/etkinlik/282009/bir-aile-provasi-yasayin-gitsin</guid>
+      <enclosure type="image/png" length="673311" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/4/bir-aile-provasi-yasayin-gitsin-282009.png"/>
+      <category><![CDATA[Sahne Sanatları]]></category>
+      <category><![CDATA[Tiyatro ve Gösteriler]]></category>
+      <content:encoded><![CDATA[<p><strong>‘BİR AİLE PROVASI: YAŞAYIN GİTSİN’ TURNEDE! </strong><br /><br />Süre: Tek perde / 90 dk. <br /><br />Yaş sınırı: +13<br /><br />Oyuncular: Devin Özgür Çınar, Fatih Özkan, Hasibe Eren, Sacide Taşaner, Süleyman Kara, Ümit Beste Kargın<br /><br /><strong>BKM'DEN YENİ, EĞLENCESİ BOL VE ÇOK TANIDIK BİR AİLE HİKAYESİ!</strong><br /><br /> ‘BİR AİLE PROVASI: YAŞAYIN GİTSİN’ TİYATRO OYUNU YAKINDA SEYİRCİYLE BULUŞUYOR!<br /><br />Oyun Hakkında: <br /><br />“Diyelim ki kendimi kaybettim, bulmak için nereye bakarım? Altın bilezik değil ki bu hemen bulayım, benim kendi şahsım…”<br />Figen bunları düşünüyor. Annesinin bir gidip bir gelen hafızasında seyahat ediyor, ablasının ilgisizliğinin içinde <br /><br />boğulmadan yüzmeye çalışıyor.  Ailenin dünyanın en berbat, en şahane, en acımasız, en şefkatli, en eğlenceli ve en hüzünlü şey olduğunu biliyor. <br /><br />Figen yeniden yazmayı başarabilirse belki kendini bulacak. Peki bu nasıl olacak?  <br /><br />Annesinin puf böreklerini yiyerek mi ablasıyla suç işleyerek mi?<br /><br />Biraz sert, epey komik ve çok gerçek bir hikaye sizi bekliyor, ilaçlarınız hazır mı?<br /><br /><strong>Oyun turne takvimi: </strong><br /><br />•<span> </span>10 Nisan 20.30 / Vehbi Koç Kongre Merkezi Eskişehir<br />•<span> </span>11 Nisan 20.30 /  Meb Şura Salonu Ankara<br />•<span> </span>12 Nisan 20.00 / 01 Burda PGM Sahne Adana <br />•<span> </span>21 Nisan 20.30 / Beşiktaş Kültür Merkezi <br /><br /><br />‘BİR AİLE PROVASI: YAŞAYIN GİTSİN’ KÜNYE:<br /><br /><strong>Yapım:</strong> BKM<br /><strong>Yürütücü Yapımcı:</strong> Omnia Yapım<br /><strong>Yazan:</strong> Evrim Yağbasan<br /><strong>Yöneten: </strong>Gülhan Kadim<br /><strong>Dramaturg: </strong>Erdem Avşar<br /><strong>Oyuncular: </strong>Devin Özgür Çınar, Fatih Özkan, Hasibe Eren, Sacide Taşaner, Süleyman Kara, Ümit Beste Kargın<br /><strong>Yapım Koordinatörleri:</strong> Aylin El, Okan Eken <br /><strong>Yardımcı Yönetmen: </strong>Ayşegül Uraz <br /><strong>Yönetmen Yardımcısı:</strong> İlayda Ulcaylı <br /><strong>Asistanlar:</strong> Mısra Athena Özkan<br /><strong>Müzik:</strong> Coşkun Karademir<br /><strong>Sahne ve Kostüm Tasarım:</strong> Gamze Kuş<br /><strong>Sahne ve Kostüm Sorumlusu:</strong> Onur Uğurlu<br /><strong>Işık Tasarım:</strong> Adem Akbey, Serdal Ece<br /><strong>Afiş Fotoğrafı:</strong> Ayşegül Karacan<br /><strong>Afiş Tasarım: </strong>Ezgi Ulusoy<br /><strong>Medya İletişim: </strong>PPR Medya ve İletişim</p>]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Yaşar</title>
+      <description><![CDATA[Yaşar, Jolly Joker ile Türkiye turnesinde!Sahnelerin en güçlü ve duygusal yorumcularından Yaşar, hafızalara kazınan şarkıları ve her biri unutulmaz olan performansıyla Türkiye'nin dört bir yanında dinleyicisiyle buluşuyor.“Divane”, “Kuşlar”, “Birtanem”, “...]]></description>
+      <pubDate>Wed, 13 May 2026 21:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/280580/yasar</link>
+      <guid>https://etkinlik.io/etkinlik/280580/yasar</guid>
+      <enclosure type="image/avif" length="60406" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/yasar-280580.avif"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Pop Müzik]]></category>
+      <content:encoded><![CDATA[<strong>Yaşar, Jolly Joker ile Türkiye turnesinde!<br /></strong><br />Sahnelerin en güçlü ve duygusal yorumcularından Yaşar, hafızalara kazınan şarkıları ve her biri unutulmaz olan performansıyla Türkiye'nin dört bir yanında dinleyicisiyle buluşuyor.<br /><br />“Divane”, “Kuşlar”, “Birtanem”, “Aldanırım”, "Sevda Sinemalarda" ve daha pek çok hit şarkısıyla dinleyicinin kalbinde bambaşka bir yeri olan Yaşar, bu turnede de müziğiyle duyguları aynı noktada buluşturuyor.Canlı performansındaki samimiyet, güçlü vokali ve şarkılarının zamansız etkisiyle Yaşar konserleri, sadece bir müzik gecesi değil; ortak bir hafızanın sahneye taşınmış hali olarak hayatınızda yer edecek.<br /><br />Biletler tükenmeden bu özel turnede yerini al, Yaşar’ın en sevilen şarkılarını onunla beraber söyleme fırsatını kaçırma.<br />]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Şanışer &amp; Sokrat St</title>
+      <description><![CDATA[Şanışer & Sokrat St, sizlerle..ŞanışerMüziği ana akım anlatılarından ibaret görmeyi reddeden Şanışer, dünyayı, sistemi, insanı ve insani duyguları klasikleşmiş çizgiden uzak; kendine has tarzıyla anlatmayı tercih etmiştir. Müziğini problemler üzerine kurm...]]></description>
+      <pubDate>Sat, 16 May 2026 21:30:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/280805/saniser-sokrat-st</link>
+      <guid>https://etkinlik.io/etkinlik/280805/saniser-sokrat-st</guid>
+      <enclosure type="image/avif" length="113140" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/saniser-sokrat-st-280805.avif"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Diğer]]></category>
+      <category><![CDATA[Hiphop/Rap]]></category>
+      <content:encoded><![CDATA[<strong>Şanışer &amp; Sokrat St, sizlerle..</strong><br /><p class="bd6ff683d8d0a42f228bf8a64b8551e1msonormal"><strong>Şanışer</strong></p><p class="bd6ff683d8d0a42f228bf8a64b8551e1msonormal">Müziği ana akım anlatılarından ibaret görmeyi reddeden Şanışer, dünyayı, sistemi, insanı ve insani duyguları klasikleşmiş çizgiden uzak; kendine has tarzıyla anlatmayı tercih etmiştir. Müziğini problemler üzerine kurmuş; maddesel ve varoluşsal problemleri kendi vücudu ve beyninde vuku bulduğu biçimde, mahremiyetinden ödün vererek, kendi hayatındaki formlarıyla anlatmıştır.</p><p class="bd6ff683d8d0a42f228bf8a64b8551e1msonormal"><strong>Sokrat St</strong></p><p class="bd6ff683d8d0a42f228bf8a64b8551e1msonormal">Sanat anlayışını “Vicdan” temeline oturtan Sokrat St, müzik tarzında ilham verici bir rol oynamayı tercih etmiştir. Hayatın karanlık yönlerini kaleme almayı seven sanatçı, en karamsar şarkılarında dahi güçlü durduğunu göstermeyi seviyor.</p>]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Saatleri Ayarlama Enstitüsü</title>
+      <description><![CDATA[Doğu ve Batı, eski ve yeni, geleneksel ve modern kutupları arasında salınıp duran Ahmet Hamdi Tanpınar’ın ölümsüz eseri Saatleri Ayarlama Enstitüsü, Serkan Keskin’in onlarca surete büründüğü bir oyunculuk şöleniyle sinema ve tiyatronun iç içe geçtiği çağd...]]></description>
+      <pubDate>Wed, 20 May 2026 20:30:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/281347/saatleri-ayarlama-enstitusu</link>
+      <guid>https://etkinlik.io/etkinlik/281347/saatleri-ayarlama-enstitusu</guid>
+      <enclosure type="image/avif" length="145031" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/saatleri-ayarlama-enstitusu-281347.avif"/>
+      <category><![CDATA[Sahne Sanatları]]></category>
+      <category><![CDATA[Tiyatro ve Gösteriler]]></category>
+      <content:encoded><![CDATA[Doğu ve Batı, eski ve yeni, geleneksel ve modern kutupları arasında salınıp duran Ahmet Hamdi Tanpınar’ın ölümsüz eseri Saatleri Ayarlama Enstitüsü, Serkan Keskin’in onlarca surete büründüğü bir oyunculuk şöleniyle sinema ve tiyatronun iç içe geçtiği çağdaş bir uyarlama olarak izleyici ile buluşuyor. Serdar Biliş’in yönetmenliğinde sahneye uyarlanan oyunun müziklerini Tuluğ Tırpan besteliyor.<br /><br />Yazan: Ahmet Hamdi Tanpınar<br />Yöneten ve Uyarlayan: Serdar Biliş<br />Sahne ve Kostüm Tasarımı: Gamze Kuş<br />Görüntü Yönetmeni : Ahmet Sesigürgil<br />Müzik: Tuluğ Tırpan<br />Multimedya Tasarım ve Prodüksiyon: Illusionist<br />Işık Tasarımı: Cem Yılmazer<br />Ses Tasarım: İzel Baybars,Ogün Kayıkçı,Başar Yurtcu<br />Yardımcı Yönetmen: Serin Öztoprak, Ekremcan Arslandağ<br />Metin Düzenleme: Ülkü Oktay <br />Oyun Asistanları: Ahmet Kahvecioğlu,Oğuzhan Altıntaş, Mert Yılmaz Yıldırım, Onur Erdemir, Berke Şenel<br />Sanatçı Asistanı: Sibel Altan<br />Dekor ve Kostüm Sorumlusu: Onur Uğurlu<br />Kostüm Şefi: Özlem Turgut<br />Sahne Amiri: Eyüp Çelik <br />Dekor Üretim: Metin Gümüşoğlu (Kibele Dekor)<br />Dekor Teknik: Zeki Küçük<br />Yapım Koordinatörü: Şevval Remziye Erdinç<br /><br />Yapım: Saatler Kolektif<br />Ahmet Sesigürgil, Cem Yılmazer, Gamze Kuş, Illusionist, Orion, Pürtelaş, Serkan Keskin, Tuluğ Tırpan, Türkan Özilhan Tacir, 484 Urban Garden, Yağmur Dolkun<br /><br />Yardımcı Yönetmen: Efe Can Yıldız<br />Makyaj Tasarımı: Reyhan Okumuş<br />Peruk Tasarımı: Oya Ballıkaya<br />Hareket Düzeni: Büşra Firidin<br />Focus Puller: Armağan Gündüz, Yasin Bayşeker<br />Kamera Asistanı: Emre Baş<br />Kamera Stajyer: Eylül Akkaya<br />Işık Şefi: Hakkı Yazıcı, Kadir Yazıcı, Süleyman Öztürk<br />Best Boy: Hakan Altunkök<br />Işık Asistanı: Ahmet Gökdeniz, Selçin Çelebi<br />Set Amiri: Hasan Kesici<br />Ses Teknisyeni: Tuna Güler<br />Boom Operatörü: Oğulcan Geçit<br />DIT: Yusuf Arık, Hakan Erten<br />Video Assist: Burak Yalçın, Oktotech<br />Prodüksiyon Asistanı: Berke Şenel<br />Kurgu Operatörü: Ulaş Mert Şimşek<br /><br />Illusionist Tasarım Ekibi:<br />Multimedia Yönetmeni: Eray Taşpınar<br />Proje Koordinatörü: Doga Kurtuluş<br />Lead Compositing: Furkan Alabaş<br />Realtime VFX: Çiğdem Güler<br />Görsel Tasarım: Emrecan Akyolcu<br />Proje Asistanı: Melike Tarakçı<br />Compositing: Abdullah Kaan Giyik, Ömer Bulut<br /><br />Stüdyo: Orion Işık ve Kamera<br />Teknik Supervizor: Ozan Özgür Arıcan<br /><br />Yaratıcı Ajans: TBWA / İstanbul, Özge Güven, İlkay Gürpınar<br />Grafik Tasarım: Özge Güven<br />Animasyon: Mahmut Kalyoncu<br />Fotoğraf Prodüksiyonu: Fotosanayii<br />Fotoğraf: Burcum Baygut <br />İletişim Danışmanlığı: İletişim Deposu<br />Sosyal Medya İletişim: Emirhan Savaş<br /><br />Destekçiler: BetaLand Audiovisual, Semaver Kumpanya, Fotosanayii, Mattestudio, Yasemin Özbudun]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Derya Bedavacı</title>
+      <description><![CDATA[Derya Bedavacı, Bayhan Prodüksiyon organizasyonuyla 21 Mayıs akşamı Selçuklu Kongre Merkezi Anadolu Sahnesi'nde...]]></description>
+      <pubDate>Thu, 21 May 2026 21:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/281440/derya-bedavaci</link>
+      <guid>https://etkinlik.io/etkinlik/281440/derya-bedavaci</guid>
+      <enclosure type="image/jpg" length="26519" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/3/derya-bedavaci-281440.jpg"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Diğer]]></category>
+      <content:encoded><![CDATA[Derya Bedavacı, Bayhan Prodüksiyon organizasyonuyla 21 Mayıs akşamı Selçuklu Kongre Merkezi Anadolu Sahnesi'nde...]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>İlkay Akkaya</title>
+      <description><![CDATA[İlkay Akkaya, 23 Mayıs akşamı Konya PSM sahnesinde sizlerle...]]></description>
+      <pubDate>Sat, 23 May 2026 21:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/281543/ilkay-akkaya</link>
+      <guid>https://etkinlik.io/etkinlik/281543/ilkay-akkaya</guid>
+      <enclosure type="image/avif" length="119469" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/4/ilkay-akkaya-281543.avif"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Türk Sanat - Halk Müziği]]></category>
+      <content:encoded><![CDATA[İlkay Akkaya, 23 Mayıs akşamı Konya PSM sahnesinde sizlerle...]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Devlerin Savaşı</title>
+      <description><![CDATA[Herbert von Karajan ve Leonard Bernstein…Sanat dünyasının iki büyük orkestra şefi.Maceralı ve ilham verici hayat hikayeleriyle çok tartışıldılar, tartışılmaya devam ediyorlar.Kıyasıya rekabet, kıskançlık ve hayranlık….Sanki Avrupa’yla Amerika’nın karşılaş...]]></description>
+      <pubDate>Mon, 01 Jun 2026 20:30:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/282270/devlerin-savasi</link>
+      <guid>https://etkinlik.io/etkinlik/282270/devlerin-savasi</guid>
+      <enclosure type="image/png" length="443716" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/4/devlerin-savasi-282270.png"/>
+      <category><![CDATA[Sahne Sanatları]]></category>
+      <category><![CDATA[Tiyatro ve Gösteriler]]></category>
+      <content:encoded><![CDATA[<p class="s3">Herbert von Karajan ve Leonard Bernstein…</p><p class="s3">Sanat dünyasının iki büyük orkestra şefi.</p><p class="s3">Maceralı ve ilham verici hayat hikayeleriyle çok tartışıldılar, tartışılmaya devam ediyorlar.</p><p class="s3">Kıyasıya rekabet, kıskançlık ve hayranlık….</p><p class="s3">Sanki Avrupa’yla Amerika’nın karşılaşması gibi.</p><p class="s3">Cesaretle, içten gelen ile kuralcı ve disiplinli olanın karşılaşması gibi.</p><p class="s3">Ve</p><p class="s3">Büyük Dünya Savaşı’ndan sonra kapanmamış defterleri de koyun hikayenin içine…</p><p class="s3">Devlerin kapışmasını izlemeye gelin!</p><p><br /><br />DEVLERİN SAVAŞI</p><p>YAZAN: PETER DANISH</p><p>ÇEVİREN: SEVİN OKYAY</p><p>YÖNETMEN: NİHAL USANMAZ</p><p>OYUNCULAR: OKAN BAYÜLGEN - CELAL KADRİ KINOĞLU - NİHAL USANMAZ</p><p>KOSTÜM - DEKOR TASARIM: İNCİ KANGAL ÖZGÜR</p><p>MÜZİK DÜZENLEME: MURAT TÜKENMEZ – KEMAL ALPAN</p><p>SAÇ - MAKYAJ TASARIM: HÜLYA TÜZÜN</p><p>AFİŞ FOTOĞRAF: MUHSİN AKGÜN</p><p>AFİŞ TASARIMI: BERKCAN OKAR</p><p>YAPIM SORUMLUSU / REJİ ASİSTANI: DİLAY YILDIZ – FERDİ TAŞKIN</p><p>ORGANİZASYON: YSM YAPIM</p><p>SANAT YÖNETMENİ: OKAN BAYÜLGEN</p><p>YAPIM: KABARE DADA &amp; ONKCONTENT<br /><br /></p><p>YAŞ SINIRI: 13+</p><p>SÜRE: 85 DAKİKA / 2 PERDE</p>]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Candela Concert</title>
+      <description><![CDATA[Merhaba Konya. Candela Concert, 5 Haziran’da Konya Anadolu Sahnesi’nde müzikseverlerle buluşuyor. Yüzlerce mum ışığıyla kurulan büyüleyici sahne düzeni, bu kez Konya Anadolu Sahnesi’nin etkileyici atmosferiyle bir araya geliyor. Candela sahnesi, ışığın ve...]]></description>
+      <pubDate>Fri, 05 Jun 2026 20:30:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/282577/candela-concert</link>
+      <guid>https://etkinlik.io/etkinlik/282577/candela-concert</guid>
+      <enclosure type="image/avif" length="161496" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/4/candela-concert-282577.avif"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Klasik Müzik]]></category>
+      <content:encoded><![CDATA[<p>Merhaba Konya. <br /><br />Candela Concert, 5 Haziran’da Konya Anadolu Sahnesi’nde müzikseverlerle buluşuyor. Yüzlerce mum ışığıyla kurulan büyüleyici sahne düzeni, bu kez Konya Anadolu Sahnesi’nin etkileyici atmosferiyle bir araya geliyor. Candela sahnesi, ışığın ve müziğin iç içe geçtiği benzersiz bir deneyim sunarken, mekânın karakteri bu geceye farklı bir derinlik katıyor.<br />Mum ışıklarıyla aydınlanan bu özel akşamda, Candela’nın kendine özgü konser formatı unutulmaz bir müzik deneyimine dönüşüyor.</p>]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+    <item>
+      <title>Model</title>
+      <description><![CDATA[Konya, 10 Yıllık Hasret 7 Haziran'da Bitiyor!“Değmesin Ellerimiz”, “Sen Ona Aşıksın”, “Pembe Mezarlık”, “Dağılmak İstiyorum”, “Antidepresan Gülümsemesi” ve “Makyaj” gibi hafızalara kazınan zamansız ve hit şarkılarıyla dönemine damga vuran MODEL, hayranlar...]]></description>
+      <pubDate>Sun, 07 Jun 2026 21:00:00 +0300</pubDate>
+      <link>https://etkinlik.io/etkinlik/282676/model</link>
+      <guid>https://etkinlik.io/etkinlik/282676/model</guid>
+      <enclosure type="image/avif" length="263889" url="https://ifyazilim.nyc3.cdn.digitaloceanspaces.com/EtkIO/PublicDepo/EtkinlikAfis/2026/4/model-282676.avif"/>
+      <category><![CDATA[Konser]]></category>
+      <category><![CDATA[Rock Müzik]]></category>
+      <content:encoded><![CDATA[<strong>Konya, 10 Yıllık Hasret 7 Haziran'da Bitiyor!</strong><br /><br />“Değmesin Ellerimiz”, “Sen Ona Aşıksın”, “Pembe Mezarlık”, “Dağılmak İstiyorum”, “Antidepresan Gülümsemesi” ve “Makyaj” gibi hafızalara kazınan zamansız ve hit şarkılarıyla dönemine damga vuran MODEL, hayranlarıyla yeniden buluşmaya hazırlanıyor. Grubun ikonik sesi Fatma Turgut, bas gitarda grubun bestecisi ve söz yazarı Can Temiz ve gitarda Okan Işık, MODEL’in unutulmaz repertuvarını yıllar sonra yeniden sahneye taşıyacak.<br /><br />Bayhan Müzik organizasyonuyla gerçekleşecek olan MODEL turnesi kapsamında grup, 07 Haziran 2026’da Konya Selçuklu Kongre Merkezi Açık Hava Sahnesi’nde sahne alacak. Çok özlenen performansları ve sevilen şarkılarından oluşan repertuvarlarıyla izleyicilere unutulmaz bir konser deneyimi yaşatacaklar.<br /><br />MODEL’in 10 yıl aradan sonraki bu özel dönüşüne Konya’da tanıklık etmek ve efsane şarkıları hep bir ağızdan söylemek için yerinizi ayırtın.<br />]]></content:encoded>
+      <slash:comments>0</slash:comments>
+    </item>
+  </channel>
+</rss>
