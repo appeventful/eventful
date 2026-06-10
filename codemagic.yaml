@@ -1,0 +1,64 @@
+# Codemagic CI/CD Configuration for Eventful iOS Build
+# Daha fazla bilgi için: https://docs.codemagic.io/yaml-quick-start/quick-start-guide/
+
+workflows:
+  ios-workflow:
+    name: Eventful iOS Release Build
+    max_build_duration: 60
+    instance_type: mac_mini_co
+    
+    environment:
+      groups:
+        # Codemagic panelinde tanımlayabileceğiniz App Store Connect ve sertifika değişkenleri grubu
+        - app_store_credentials 
+      vars:
+        XCODE_WORKSPACE: "ios/Runner.xcworkspace"
+        XCODE_SCHEME: "Runner"
+        FLUTTER_VERSION: "stable" # veya projenizin kullandığı spesifik Flutter sürümü
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - target: main
+        - target: master
+        - target: dev
+
+    scripts:
+      - name: Set up local properties and configs
+        script: |
+          echo "Preparing environment..."
+          
+      - name: Get Flutter packages
+        script: |
+          flutter precache --ios
+          flutter pub get
+
+      - name: Pod Install
+        script: |
+          cd ios && pod install
+
+      - name: Flutter build IPA
+        script: |
+          # Eğer otomatik kod imzalama (code signing) kullanıyorsanız:
+          # keychain initialize
+          # app-store-connect fetch-signing-files "com.yourdomain.eventful" --project-id=YOUR_PROJECT_ID_FROM_APP_STORE_CONNECT --install-profiles
+          
+          # İmzasız bir IPA derlemek için (veya Codemagic panelinden imzalama yapacaksanız):
+          flutter build ipa --release --no-codesign
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      email:
+        recipients:
+          # Buraya bildirim gitmesini istediğiniz e-posta adreslerini ekleyebilirsiniz
+          - admin@example.com
+        notify:
+          success: true
+          failure: true
