@@ -140,10 +140,17 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
         String minVersion = data['minVersion'] ?? '1.0.0';
         if (_isUpdateRequired(_packageInfo!.version, minVersion) && !isAdmin) {
+          String? updateUrl;
+          if (Theme.of(context).platform == TargetPlatform.android) {
+            updateUrl = data['updateUrlAndroid'];
+          } else if (Theme.of(context).platform == TargetPlatform.iOS) {
+            updateUrl = data['updateUrlIos'];
+          }
+          
           return _UpdateRequiredScreen(
             currentVersion: _packageInfo!.version,
             minVersion: minVersion,
-            updateUrl: data['updateUrl'],
+            updateUrl: updateUrl,
           );
         }
 

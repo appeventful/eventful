@@ -114,8 +114,15 @@ exports.adminWipeUserData = onCall(async (request) => {
 
     await batch.commit();
 
-    // 5. Firebase Auth Hesabını sil
-    await admin.auth().deleteUser(uid);
+    // 5. Firebase Auth Hesabını sil (Eğer kullanıcı zaten silinmişse hatayı görmezden gel)
+    try {
+      await admin.auth().deleteUser(uid);
+    } catch (authError) {
+      if (authError.code !== 'auth/user-not-found') {
+        console.error('Auth silme hatası:', authError);
+        // User not found değilse kritik bir hatadır, fırlatabiliriz ama veriler silindiği için devam da edebiliriz.
+      }
+    }
 
     // Log action
     await db.collection('admin_logs').add({

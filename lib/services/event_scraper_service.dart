@@ -46,10 +46,22 @@ class EventScraperService {
         final Map<String, dynamic> data = jsonDecode(response.body);
         final List<dynamic> items = data['items'] ?? [];
         
-        return items.where((item) {
+        final List<Map<String, dynamic>> processedEvents = items.where((item) {
           final eventCity = item['venue']?['city']?['name']?.toString().toLowerCase() ?? '';
           final targetCity = city.toLowerCase();
-          return eventCity.contains(targetCity) || targetCity.contains(eventCity);
+          final bool cityMatches = eventCity.contains(targetCity) || targetCity.contains(eventCity);
+          
+          if (!cityMatches) return false;
+
+          // Bugünü ve geçmişi filtrele
+          final DateTime? eventDate = DateTime.tryParse(item['start'] ?? '');
+          if (eventDate == null) return false;
+          
+          final now = DateTime.now();
+          final today = DateTime(now.year, now.month, now.day);
+          
+          // Sadece bugünden sonraki (yarın ve sonrası) etkinlikleri al
+          return eventDate.isAfter(today.add(const Duration(days: 1)).subtract(const Duration(seconds: 1)));
         }).map((item) {
           // Resim URL'sini bulmak için tüm ihtimalleri tara
           String? apiImageUrl;
@@ -85,6 +97,8 @@ class EventScraperService {
             'externalSource': true,
           };
         }).toList();
+
+        return processedEvents;
       }
       return [];
     } catch (e) {
@@ -94,7 +108,13 @@ class EventScraperService {
   }
 
   static Future<void> scrapeAndSaveEvents({required String city, int limit = 10}) async {
-    final events = await fetchEvents(city);
+    List<Map<String, dynamic>> events = await fetchEvents(city);
+    
+    // Eğer bir limit varsa, rastgele günlerden seçmek için listeyi karıştır
+    if (limit < events.length) {
+      events.shuffle();
+    }
+
     final db = FirebaseFirestore.instance;
     
     int saved = 0;

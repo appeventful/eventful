@@ -133,6 +133,18 @@ class SettingsTab extends StatelessWidget {
               trailing: const Icon(Icons.update, size: 20),
               onTap: () => onEditSetting('minVersion', data['minVersion'] ?? '1.0.0'),
             ),
+            ListTile(
+              title: const Text('Android Güncelleme Linki'),
+              subtitle: Text(data['updateUrlAndroid'] ?? 'Link ayarlanmamış', maxLines: 1, overflow: TextOverflow.ellipsis),
+              trailing: const Icon(Icons.link, size: 20),
+              onTap: () => onEditSetting('updateUrlAndroid', data['updateUrlAndroid'] ?? ''),
+            ),
+            ListTile(
+              title: const Text('iOS Güncelleme Linki'),
+              subtitle: Text(data['updateUrlIos'] ?? 'Link ayarlanmamış', maxLines: 1, overflow: TextOverflow.ellipsis),
+              trailing: const Icon(Icons.link, size: 20),
+              onTap: () => onEditSetting('updateUrlIos', data['updateUrlIos'] ?? ''),
+            ),
             const Divider(color: Colors.white10),
             const Text('Sistem Araçları', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             _toolTile(Icons.notifications_active, 'Toplu Bildirim Gönder', 'Tüm kullanıcılara özel bildirim', onShowBulkNotification, Colors.purpleAccent),
