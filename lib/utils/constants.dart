@@ -51,4 +51,7 @@ const List<Map<String, dynamic>> availableBadges = [
   {'id': 'explorer', 'name': 'Kaşif', 'icon': '🗺️', 'color': 'orange', 'description': 'Farklı kategorilerde en az 5 farklı etkinliğe katılan macera sever üye.'},
   {'id': 'chatter', 'name': 'Sohbet Uzmanı', 'icon': '💬', 'color': 'lightBlue', 'description': 'Topluluk sohbetlerinde aktif rol alan ve iletişimi kuvvetli üye.'},
   {'id': 'photographer', 'name': 'Anı Yakalayıcı', 'icon': '📸', 'color': 'pink', 'description': 'Etkinliklerde paylaştığı fotoğraflarla anıları ölümsüzleştiren üye.'},
+  {'id': 'supporter_bronze', 'name': 'Bronz Destekçi', 'icon': '🥉', 'color': 'orange', 'description': 'Uygulamayı destekleyerek topluluğumuza katkıda bulunan değerli üye.'},
+  {'id': 'supporter_silver', 'name': 'Gümüş Destekçi', 'icon': '🥈', 'color': 'grey', 'description': 'Uygulamayı cömertçe destekleyen ve topluluğumuzun büyümesine yardımcı olan üye.'},
+  {'id': 'supporter_gold', 'name': 'Altın Destekçi', 'icon': '🥇', 'color': 'amber', 'description': 'Uygulamayı en üst düzeyde destekleyen, topluluğumuzun parlayan yıldızı.'},
 ];

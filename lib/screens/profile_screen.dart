@@ -23,6 +23,7 @@ import '../widgets/full_screen_image.dart';
 import '../models/event_model.dart';
 import '../widgets/event_card.dart';
 import '../models/user_model.dart';
+import 'supporter_screen.dart';
 
 import '../utils/constants.dart';
 
@@ -329,6 +330,8 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
           const SizedBox(height: 24),
           _buildUserLinks(user),
           const SizedBox(height: 24),
+          if (_isMe) _buildSupporterSection(user),
+          if (_isMe) const SizedBox(height: 24),
           _buildRestrictionWarning(user),
           if (_isMe) ...[
             const SizedBox(height: 32),
@@ -1201,6 +1204,68 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(color: Colors.orange.withOpacity(0.05), borderRadius: BorderRadius.circular(12)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.orange)), const SizedBox(height: 4), Text(content, style: const TextStyle(fontSize: 13, height: 1.3))]),
+    );
+  }
+
+  Widget _buildSupporterSection(UserModel user) {
+    final bool isSupporter = user.isSupporter;
+    
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.orange.shade400, Colors.deepOrange.shade600],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(color: Colors.orange.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 5)),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.stars, color: Colors.white, size: 30),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isSupporter ? 'Harika Bir Destekçisin! ❤️' : 'Uygulamayı Destekle',
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    Text(
+                      isSupporter 
+                        ? 'Desteğin sayesinde Eventful büyümeye devam ediyor.' 
+                        : 'Özel rozetler kazanmak ve bize katkıda bulunmak ister misin?',
+                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            height: 40,
+            child: ElevatedButton(
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SupporterScreen())),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.orange.shade800,
+                elevation: 0,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: Text(isSupporter ? 'Destek Seviyeni Değiştir' : 'Destekçi Ol ve Rozet Kazan'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

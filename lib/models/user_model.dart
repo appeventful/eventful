@@ -51,6 +51,7 @@ class UserModel {
   final List<String> badges;
   final String? deviceId;
   final Map<String, bool> notificationSettings;
+  final String supporterTier; // 'none', 'bronze', 'silver', 'gold'
 
   UserModel({
     required this.uid,
@@ -108,6 +109,7 @@ class UserModel {
       'event_reminder': true,
       'mentions': true,
     },
+    this.supporterTier = 'none',
   });
 
   UserModel copyWith({
@@ -160,6 +162,7 @@ class UserModel {
     List<String>? badges,
     String? deviceId,
     Map<String, bool>? notificationSettings,
+    String? supporterTier,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -211,6 +214,7 @@ class UserModel {
       badges: badges ?? this.badges,
       deviceId: deviceId ?? this.deviceId,
       notificationSettings: notificationSettings ?? this.notificationSettings,
+      supporterTier: supporterTier ?? this.supporterTier,
     );
   }
 
@@ -290,6 +294,7 @@ class UserModel {
       badges: List<String>.from(data['badges'] ?? []),
       deviceId: data['deviceId'],
       notificationSettings: settings,
+      supporterTier: data['supporterTier'] ?? 'none',
     );
   }
 
@@ -343,6 +348,7 @@ class UserModel {
       'badges': badges,
       'deviceId': deviceId,
       'notificationSettings': notificationSettings,
+      'supporterTier': supporterTier,
     };
   }
 
@@ -350,6 +356,7 @@ class UserModel {
   bool get isModerator => role == 'moderator' || isAdmin;
   bool get isCityRepresentative => role == 'city_representative';
   bool get isStaff => isAdmin || isModerator || isCityRepresentative;
+  bool get isSupporter => supporterTier != 'none';
 
   bool canManageCity(String? city) {
     if (isAdmin || isModerator) return true;
