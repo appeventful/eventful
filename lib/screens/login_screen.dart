@@ -145,6 +145,27 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _loginWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final credential = await _auth.signInWithGoogle();
+      if (credential != null && mounted) {
+        // Successful login is handled by AuthWrapper
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = 'Google ile giriş yapılamadı. Lütfen tekrar deneyin.';
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -269,6 +290,25 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: _isLoading
                             ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 3)
                             : const Text('Giriş Yap', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Google Login Button
+                    SizedBox(
+                      height: 56,
+                      child: OutlinedButton.icon(
+                        onPressed: _isLoading ? null : _loginWithGoogle,
+                        icon: const Icon(Icons.g_mobiledata, size: 32, color: Colors.blue),
+                        label: const Text(
+                          'Google ile Devam Et',
+                          style: TextStyle(fontSize: 16, color: Colors.black87),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: Colors.grey.shade300),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
                       ),
                     ),
 

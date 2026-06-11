@@ -26,6 +26,17 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.327687814157-fp3229fguetbfjuert5ijg7ur6d9q4k8</string>
+			</array>
+		</dict>
+	</array>
 
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Size en yakın etkinlikleri göstermek ve otomatik şehir seçimi yapmak için konum iznine ihtiyacımız var.</string>
