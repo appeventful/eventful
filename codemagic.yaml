@@ -58,7 +58,7 @@ workflows:
       email:
         recipients:
           # Buraya bildirim gitmesini istediğiniz e-posta adreslerini ekleyebilirsiniz
-          - admin@example.com
+          - eventful@eventfulapp.org
         notify:
           success: true
           failure: true
