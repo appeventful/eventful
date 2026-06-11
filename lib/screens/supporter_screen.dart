@@ -42,9 +42,9 @@ class _SupporterScreenState extends State<SupporterScreen> {
     }
 
     const Set<String> _kIds = <String>{
-      'supporter_bronze_monthly',
-      'supporter_silver_monthly',
-      'supporter_gold_monthly',
+      'bronz',
+      'gumus',
+      'altin',
     };
     final ProductDetailsResponse response = await _inAppPurchase.queryProductDetails(_kIds);
     
@@ -82,13 +82,13 @@ class _SupporterScreenState extends State<SupporterScreen> {
     String tier = 'none';
     String badgeId = '';
     
-    if (purchase.productID == 'supporter_bronze_monthly') {
+    if (purchase.productID == 'bronz') {
       tier = 'bronze';
       badgeId = 'supporter_bronze';
-    } else if (purchase.productID == 'supporter_silver_monthly') {
+    } else if (purchase.productID == 'gumus') {
       tier = 'silver';
       badgeId = 'supporter_silver';
-    } else if (purchase.productID == 'supporter_gold_monthly') {
+    } else if (purchase.productID == 'altin') {
       tier = 'gold';
       badgeId = 'supporter_gold';
     }
@@ -144,31 +144,43 @@ class _SupporterScreenState extends State<SupporterScreen> {
                   const SizedBox(height: 40),
                   _buildTierCard(
                     title: 'Bronz Destekçi',
-                    price: '25₺ / ay',
+                    price: '29.99₺ / ay',
                     description: 'Profilinizde Bronz rozet kazanır ve isminiz turuncu görünür.',
                     color: Colors.orange.shade700,
-                    productId: 'supporter_bronze_monthly',
+                    productId: 'bronz',
                   ),
                   const SizedBox(height: 16),
                   _buildTierCard(
                     title: 'Gümüş Destekçi',
-                    price: '50₺ / ay',
+                    price: '59.99₺ / ay',
                     description: 'Profilinizde Gümüş rozet kazanır ve isminiz gümüş renginde parlar.',
                     color: Colors.blueGrey.shade400,
-                    productId: 'supporter_silver_monthly',
+                    productId: 'gumus',
                   ),
                   const SizedBox(height: 16),
                   _buildTierCard(
                     title: 'Altın Destekçi',
-                    price: '100₺ / ay',
+                    price: '119.99₺ / ay',
                     description: 'Altın rozet kazanır, isminiz altın renginde parlar ve en üst düzey desteği sağlarsınız.',
                     color: Colors.amber.shade600,
-                    productId: 'supporter_gold_monthly',
+                    productId: 'altin',
                   ),
                   const SizedBox(height: 40),
                   TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: const Text('Belki Daha Sonra', style: TextStyle(color: Colors.grey)),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () async {
+                      await _inAppPurchase.restorePurchases();
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Satın alımlar geri yükleniyor...')),
+                        );
+                      }
+                    },
+                    child: const Text('Satın Alımları Geri Yükle', style: TextStyle(fontSize: 12, color: Colors.blueGrey)),
                   ),
                 ],
               ),
@@ -183,8 +195,6 @@ class _SupporterScreenState extends State<SupporterScreen> {
     required Color color,
     required String productId,
   }) {
-    // If store is not available or product not found, we show mock price
-    // In real app, we should use _products finding correct product details
     ProductDetails? product;
     try {
       product = _products.firstWhere((p) => p.id == productId);
@@ -215,8 +225,7 @@ class _SupporterScreenState extends State<SupporterScreen> {
                   final PurchaseParam purchaseParam = PurchaseParam(productDetails: product);
                   _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
                 } else {
-                  // Mock purchase for simulation if not in real store
-                  _handleMockPurchase(productId);
+                  _showStoreError();
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -232,29 +241,20 @@ class _SupporterScreenState extends State<SupporterScreen> {
     );
   }
 
-  void _handleMockPurchase(String productId) {
+  void _showStoreError() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Simüle Edilmiş Ödeme'),
-        content: const Text('Mağaza ID\'leri henüz tanımlanmadığı için bu işlem şu an simüle edilmektedir.'),
+        title: const Text('Mağaza Bağlantı Hatası'),
+        content: const Text('Google Play Store bağlantısı kurulamadı. Lütfen internet bağlantınızı ve Google hesabınızın açık olduğunu kontrol edin.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('İptal')),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _handleSuccessfulPurchase(PurchaseDetails(
-                productID: productId,
-                status: PurchaseStatus.purchased,
-                transactionDate: DateTime.now().millisecondsSinceEpoch.toString(),
-                purchaseID: 'mock_id_${DateTime.now().millisecondsSinceEpoch}',
-                verificationData: PurchaseVerificationData(localVerificationData: '', serverVerificationData: '', source: ''),
-              ));
-            },
-            child: const Text('Ödemeyi Onayla'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tamam')),
         ],
       ),
     );
+  }
+
+  void _handleMockPurchase(String productId) {
+    // Bu metod artık kullanılmıyor, yerine _showStoreError eklendi.
   }
 }
