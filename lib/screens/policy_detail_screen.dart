@@ -10,13 +10,12 @@ class PolicyDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(title, style: const TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
+        title: Text(title),
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: FirebaseFirestore.instance.collection('app_settings').doc('policies').get(),
@@ -58,30 +57,29 @@ class PolicyDetailScreen extends StatelessWidget {
                   else content = 'Metin henüz eklenmemiş.';
                 }
 
-                return _buildContent(content);
+                return _buildContent(content, isDark);
               },
             );
           }
 
-          return _buildContent(content);
+          return _buildContent(content, isDark);
         },
       ),
     );
   }
 
-  Widget _buildContent(String content) {
-    return Container(
-      color: Colors.white,
+  Widget _buildContent(String content, bool isDark) {
+    return SizedBox(
       width: double.infinity,
       height: double.infinity,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Text(
           content,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
             height: 1.6,
-            color: Colors.black,
+            color: isDark ? Colors.white70 : Colors.black87,
           ),
         ),
       ),

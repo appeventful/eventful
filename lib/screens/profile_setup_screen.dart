@@ -168,8 +168,6 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 decoration: InputDecoration(
                   labelText: 'Ad Soyad',
                   border: const OutlineInputBorder(),
-                  fillColor: _isNameReadOnly ? const Color(0xFFF5F5F5) : Colors.white,
-                  filled: true,
                   helperText: _isNameReadOnly ? 'Ad Soyad sonradan değiştirilemez.' : 'Lütfen adınızı ve soyadınızı girin.',
                 ),
                 validator: (v) => v!.isEmpty ? 'Ad Soyad gerekli' : null,
@@ -182,8 +180,6 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 decoration: InputDecoration(
                   labelText: 'Telefon Numarası',
                   border: const OutlineInputBorder(),
-                  fillColor: _isPhoneReadOnly ? const Color(0xFFF5F5F5) : Colors.white,
-                  filled: true,
                   helperText: _isPhoneReadOnly ? 'Telefon numarası sonradan değiştirilemez.' : 'Örn: 05xx xxx xx xx',
                 ),
                 validator: (v) {
@@ -203,8 +199,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 title: Text(_selectedDate == null ? 'Doğum Tarihi Seçin' : 'Doğum Tarihi: ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'),
                 trailing: const Icon(Icons.calendar_today),
                 onTap: _selectDate,
-                tileColor: Colors.grey.shade100,
-                shape: RoundedRectangleBorder(),
+                shape: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
@@ -263,7 +258,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       padding: const EdgeInsets.only(top: 12.0),
                       child: RichText(
                         text: TextSpan(
-                          style: const TextStyle(fontSize: 12, color: Colors.black87),
+                          style: TextStyle(
+                            fontSize: 12, 
+                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white70 : Colors.black87
+                          ),
                           children: [
                             TextSpan(
                               text: 'Kullanım Koşulları',
@@ -274,7 +272,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                                   MaterialPageRoute(builder: (_) => const PolicyDetailScreen(title: 'Kullanım Koşulları', policyType: 'terms')),
                                 ),
                             ),
-                            const TextSpan(text: ' ve '),
+                            const TextSpan(text: ', '),
                             TextSpan(
                               text: 'Gizlilik Politikası',
                               style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
@@ -284,7 +282,17 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                                   MaterialPageRoute(builder: (_) => const PolicyDetailScreen(title: 'Gizlilik Politikası', policyType: 'privacy')),
                                 ),
                             ),
-                            const TextSpan(text: '\'nı okudum, onaylıyorum.'),
+                            const TextSpan(text: ' ve '),
+                            TextSpan(
+                              text: 'KVKK Metni',
+                              style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => const PolicyDetailScreen(title: 'KVKK Aydınlatma Metni', policyType: 'kvkk')),
+                                ),
+                            ),
+                            const TextSpan(text: '\'ni okudum, onaylıyorum.'),
                           ],
                         ),
                       ),

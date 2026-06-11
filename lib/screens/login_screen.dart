@@ -154,7 +154,11 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final credential = await _auth.signInWithGoogle();
       if (credential != null && mounted) {
-        // Successful login is handled by AuthWrapper
+        // Giriş başarılı, dialogdan gelmişsek dialogu kapat, 
+        // ana sayfaya yönlendirmeyi AuthWrapper otomatik yapacak veya popUntil ile temizlenecek.
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      } else {
+        setState(() => _isLoading = false);
       }
     } catch (e) {
       if (mounted) {
