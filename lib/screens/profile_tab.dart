@@ -41,8 +41,8 @@ class _ProfileTabState extends State<ProfileTab> {
   void initState() {
     super.initState();
     if (_currentUserId != null) {
-      ScoreService().checkUserPendingDuties(_currentUserId!);
-      ScoreService().checkDailyLogin();
+      ScoreService.instance.checkUserPendingDuties(_currentUserId!);
+      ScoreService.instance.checkDailyLogin();
     }
   }
 
@@ -79,7 +79,7 @@ class _ProfileTabState extends State<ProfileTab> {
       }
 
       if (launched && !user.isInstagramFollowed) {
-        await ScoreService().updateScore(
+        await ScoreService.instance.updateScore(
           userId: user.uid,
           amount: ScoreService.instagramFollowReward,
           reason: 'Instagram Takip Ödülü',
