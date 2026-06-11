@@ -5,9 +5,9 @@ import 'notification_service.dart';
 import '../utils/constants.dart';
 
 class ScoreService {
-  ScoreService._();
-  static final ScoreService instance = ScoreService._();
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseFirestore _db;
+  ScoreService({FirebaseFirestore? firestore}) : _db = firestore ?? FirebaseFirestore.instance;
+  static final ScoreService instance = ScoreService();
 
   // Score Types and Values
   static const int dailyLogin = 3;

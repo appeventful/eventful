@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'notification_service.dart';
-import 'score_service.dart';
+import 'package:eventful_app/services/score_service.dart';
 
 class CommentService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
