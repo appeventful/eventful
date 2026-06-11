@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/auth_service.dart';
 import '../utils/error_messages.dart';
+import '../utils/platform_helper.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -123,13 +125,21 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('E-postamı Unuttum'),
-            content: const Text('Lütfen eventful@eventfulapp.com adresine mail atın.'),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tamam')),
-            ],
-          ),
+          builder: (context) => PlatformHelper.isIOS 
+            ? CupertinoAlertDialog(
+                title: const Text('E-postamı Unuttum'),
+                content: const Text('Lütfen eventful@eventfulapp.com adresine mail atın.'),
+                actions: [
+                  CupertinoDialogAction(onPressed: () => Navigator.pop(context), child: const Text('Tamam')),
+                ],
+              )
+            : AlertDialog(
+                title: const Text('E-postamı Unuttum'),
+                content: const Text('Lütfen eventful@eventfulapp.com adresine mail atın.'),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tamam')),
+                ],
+              ),
         );
       }
     }
@@ -273,7 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                              MaterialPageRoute(builder: (_) => RegisterScreen()),
                             );
                           },
                           child: const Text(

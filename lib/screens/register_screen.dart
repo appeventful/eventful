@@ -7,7 +7,8 @@ import '../services/auth_service.dart';
 import '../models/user_model.dart';
 import '../utils/error_messages.dart';
 import 'policy_detail_screen.dart';
-import '../utils/constants.dart';
+import '../utils/platform_helper.dart';
+import 'package:flutter/cupertino.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -56,22 +57,62 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _selectDate() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime(2000),
-      firstDate: DateTime(1940),
-      lastDate: DateTime.now(),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(primary: Colors.orange, onPrimary: Colors.white),
+    if (PlatformHelper.isIOS) {
+      showCupertinoModalPopup(
+        context: context,
+        builder: (_) => Container(
+          height: 250,
+          color: CupertinoColors.systemBackground.resolveFrom(context),
+          child: Column(
+            children: [
+              Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: CupertinoColors.separator.resolveFrom(context), width: 0)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CupertinoButton(
+                      child: const Text('Bitti'),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.date,
+                  initialDateTime: _selectedDate ?? DateTime(2000),
+                  maximumDate: DateTime.now(),
+                  minimumYear: 1940,
+                  onDateTimeChanged: (DateTime newDate) {
+                    setState(() => _selectedDate = newDate);
+                  },
+                ),
+              ),
+            ],
           ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null) {
-      setState(() => _selectedDate = picked);
+        ),
+      );
+    } else {
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime(2000),
+        firstDate: DateTime(1940),
+        lastDate: DateTime.now(),
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(primary: Colors.orange, onPrimary: Colors.white),
+            ),
+            child: child!,
+          );
+        },
+      );
+      if (picked != null) {
+        setState(() => _selectedDate = picked);
+      }
     }
   }
 
@@ -362,29 +403,58 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _buildGenderPicker() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButtonFormField<String>(
-          value: _selectedGender,
-          dropdownColor: Colors.white,
-          items: ['Erkek', 'Kadın', 'Diğer'].map((g) => DropdownMenuItem(
-            value: g, 
-            child: Text(g, style: const TextStyle(color: Colors.black87)),
-          )).toList(),
-          onChanged: (v) => setState(() => _selectedGender = v),
-          style: const TextStyle(color: Colors.black87, fontSize: 14),
-          decoration: const InputDecoration(
-            border: InputBorder.none,
-            hintText: 'Cinsiyet',
-            hintStyle: TextStyle(color: Colors.grey),
-            prefixIcon: Icon(Icons.people_outline, color: Colors.orange, size: 20),
+    return InkWell(
+      onTap: PlatformHelper.isIOS ? _showIOSGenderPicker : null,
+      child: IgnorePointer(
+        ignoring: PlatformHelper.isIOS,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade50,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade200),
           ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButtonFormField<String>(
+              initialValue: _selectedGender,
+              dropdownColor: Colors.white,
+              items: ['Erkek', 'Kadın', 'Diğer'].map((g) => DropdownMenuItem(
+                value: g, 
+                child: Text(g, style: const TextStyle(color: Colors.black87)),
+              )).toList(),
+              onChanged: (v) => setState(() => _selectedGender = v),
+              style: const TextStyle(color: Colors.black87, fontSize: 14),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Cinsiyet',
+                hintStyle: const TextStyle(color: Colors.grey),
+                prefixIcon: const Icon(Icons.people_outline, color: Colors.orange, size: 20),
+                suffixIcon: PlatformHelper.isIOS ? const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey) : null,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showIOSGenderPicker() {
+    final List<String> genders = ['Erkek', 'Kadın', 'Diğer'];
+    showCupertinoModalPopup(
+      context: context,
+      builder: (_) => CupertinoActionSheet(
+        title: const Text('Cinsiyet Seçin'),
+        actions: genders.map((g) => CupertinoActionSheetAction(
+          onPressed: () {
+            setState(() => _selectedGender = g);
+            Navigator.pop(context);
+          },
+          child: Text(g),
+        )).toList(),
+        cancelButton: CupertinoActionSheetAction(
+          isDefaultAction: true,
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Vazgeç'),
         ),
       ),
     );

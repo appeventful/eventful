@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import '../../providers/user_provider.dart';
 import '../../models/event_model.dart';
+import '../../utils/platform_helper.dart';
 import '../../services/score_service.dart';
 import '../../utils/city_centers.dart';
 import '../shimmer_effect.dart';
@@ -23,7 +24,7 @@ class DiscoverTab extends StatefulWidget {
 }
 
 class DiscoverTabState extends State<DiscoverTab> {
-  final ScoreService _scoreService = ScoreService();
+  final ScoreService _scoreService = ScoreService.instance;
   String _selectedCategory = 'Tümü';
   String _selectedCity = 'İstanbul';
   bool _isLocating = false;
@@ -503,7 +504,10 @@ class DiscoverTabState extends State<DiscoverTab> {
                         child: ChoiceChip(
                           label: Text(cat),
                           selected: isSelected,
-                          onSelected: (val) => setState(() => _selectedCategory = cat),
+                          onSelected: (val) {
+                            PlatformHelper.hapticFeedback();
+                            setState(() => _selectedCategory = cat);
+                          },
                           selectedColor: Colors.orange,
                           labelStyle: TextStyle(
                             color: isSelected ? Colors.white : (isDark ? Colors.white70 : Colors.black87),

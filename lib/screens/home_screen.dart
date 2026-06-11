@@ -10,8 +10,9 @@ import 'admin_panel_screen.dart';
 import 'reference_requests_screen.dart';
 import 'search_screen.dart';
 import '../services/score_service.dart';
-import 'package:rxdart/rxdart.dart';
 import 'map_explorer_screen.dart';
+import 'package:rxdart/rxdart.dart';
+import '../utils/platform_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   final ScrollController? scrollController;
@@ -23,7 +24,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final ScoreService _scoreService = ScoreService();
+  final ScoreService _scoreService = ScoreService.instance;
   final GlobalKey<DiscoverTabState> _discoverTabKey = GlobalKey<DiscoverTabState>();
   bool _canCreateEvent = true;
 
@@ -62,42 +63,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showFounderWelcomeDialog(String uid) {
-    showDialog(
+    PlatformHelper.showAdaptiveDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Column(
-          children: [
-            Icon(Icons.stars, color: Colors.orange, size: 60),
-            SizedBox(height: 16),
-            Text('Kurucu Üye!', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
-          ],
-        ),
-        content: const Text(
-          'Tebrikler! Eventful\'un ilk kullanıcılarından biri olduğunuz için "Kurucu" (Founder) rozetini kazandınız.\n\nBu özel topluluğun bir parçası olduğunuz için teşekkür ederiz.',
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          Center(
-            child: ElevatedButton(
-              onPressed: () async {
-                await FirebaseFirestore.instance.collection('users').doc(uid).update({
-                  'hasSeenFounderWelcome': true,
-                });
-                if (context.mounted) Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-              ),
-              child: const Text('Harika!'),
-            ),
-          ),
-        ],
-      ),
+      title: 'Kurucu Üye!',
+      content: 'Tebrikler! Eventful\'un ilk kullanıcılarından biri olduğunuz için "Kurucu" (Founder) rozetini kazandınız.\n\nBu özel topluluğun bir parçası olduğunuz için teşekkür ederiz.',
+      confirmText: 'Harika!',
+      onConfirm: () async {
+        await FirebaseFirestore.instance.collection('users').doc(uid).update({
+          'hasSeenFounderWelcome': true,
+        });
+      },
     );
   }
 
@@ -214,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.map_outlined, color: Colors.orange, size: 28),
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const MapExplorerScreen()),
+              MaterialPageRoute(builder: (context) => MapExplorerScreen()),
             ),
             tooltip: 'Harita Görünümü',
           ),

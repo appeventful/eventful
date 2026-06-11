@@ -25,7 +25,7 @@ class OnboardingScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.orange.shade50.withOpacity(0.5), Colors.white],
+            colors: [Colors.orange.shade50.withValues(alpha: 0.5), Colors.white],
           ),
         ),
         child: SafeArea(
@@ -80,7 +80,7 @@ class OnboardingScreen extends StatelessWidget {
                 color: Colors.orange,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: Colors.orange.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4)),
+                  BoxShadow(color: Colors.orange.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 4)),
                 ],
               ),
               child: const Text("Hadi Başla", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
@@ -109,7 +109,7 @@ class OnboardingScreen extends StatelessWidget {
         margin: const EdgeInsets.only(top: 40),
         padding: const EdgeInsets.all(40),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(icon, size: 120, color: color),

@@ -159,6 +159,7 @@ class EventJoinSection extends StatelessWidget {
     bool isUserRestricted = false;
     if (!isAdmin) {
       var userDoc = await db.collection('users').doc(currentUser?.uid).get();
+      if (!context.mounted) return;
       isUserRestricted = userDoc.data()?['isRestricted'] ?? false;
     }
 
@@ -180,6 +181,7 @@ class EventJoinSection extends StatelessWidget {
             .get();
 
         if (codeDocs.docs.isEmpty) {
+          if (!context.mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Geçersiz veya kullanılmış referans kodu.')));
           return;
         }
@@ -227,8 +229,10 @@ class EventJoinSection extends StatelessWidget {
         await db.collection('events').doc(eventId).update(updates);
       }
       
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(needsApproval ? 'İsteğiniz gönderildi.' : 'Etkinliğe katıldınız!')));
     } catch (e) {
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Hata: $e')));
     }
   }

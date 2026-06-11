@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,6 +14,7 @@ import 'notifications_screen.dart';
 import 'banned_screen.dart';
 import 'community_tab.dart';
 import 'city_events_tab.dart';
+import '../utils/platform_helper.dart';
 import '../services/score_service.dart';
 
 class MainNavigationWrapper extends StatefulWidget {
@@ -36,6 +38,7 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
   ];
 
   void _onItemTapped(int index) {
+    PlatformHelper.hapticFeedback();
     if (AuthService().isGuest) {
       if (index == 3) {
         GuestGuardDialog.show(context, "Mesajlaşma");
@@ -65,17 +68,53 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
     }
   }
 
+  Timer? _activityTimer;
+
   @override
   void initState() {
     super.initState();
     _checkPendingDuties();
+    _startActivityTracking();
+  }
+
+  @override
+  void dispose() {
+    _activityTimer?.cancel();
+    _homeScrollController.dispose();
+    super.dispose();
+  }
+
+  void _startActivityTracking() {
+    _updateActivity();
+    _activityTimer = Timer.periodic(const Duration(minutes: 3), (timer) {
+      _updateActivity();
+    });
+  }
+
+  void _updateActivity() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    try {
+      if (user.isAnonymous) {
+        await FirebaseFirestore.instance.collection('active_guests').doc(user.uid).set({
+          'lastActive': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      } else {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+          'lastLogin': FieldValue.serverTimestamp(),
+        });
+      }
+    } catch (e) {
+      debugPrint("Activity tracking error: $e");
+    }
   }
 
   Future<void> _checkPendingDuties() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null && !user.isAnonymous) {
       // Don't block UI
-      ScoreService().checkUserPendingDuties(user.uid);
+      ScoreService.instance.checkUserPendingDuties(user.uid);
     }
   }
 
@@ -88,6 +127,9 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
+
+        // iOS'ta geri tuşu (gesture hariç) olmadığı için Android'deki "çıkış" mantığını burada devre dışı bırakabiliriz
+        if (PlatformHelper.isIOS) return;
 
         // Eğer bir alt sayfa (Navigator) açıksa önce onu kapat
         if (context.mounted) {

@@ -499,8 +499,9 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                    bool newValue = !(data['isProfileImageApproved'] ?? false);
                    await _db.collection('users').doc(uid).update({'isProfileImageApproved': newValue});
                    if (newValue) {
-                     await ScoreService().updateScore(userId: uid, amount: ScoreService.photoShareReward, reason: 'Profil Onaylandı', relatedId: 'photo_$uid');
+                     await ScoreService.instance.updateScore(userId: uid, amount: ScoreService.photoShareReward, reason: 'Profil Onaylandı', relatedId: 'photo_$uid');
                    }
+                   if (!context.mounted) return;
                    Navigator.pop(context);
                 },
               ),
@@ -509,6 +510,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                 title: const Text('E-postayı El İle Onayla'),
                 onTap: () async {
                    await FirebaseFunctions.instance.httpsCallable('adminVerifyUserEmail').call({'uid': uid});
+                   if (!context.mounted) return;
                    Navigator.pop(context);
                 },
               ),
@@ -547,6 +549,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                     'isRestricted': newS,
                     'referenceParticipationCount': 0,
                   });
+                  if (!context.mounted) return;
                   Navigator.pop(context);
                 },
               ),
@@ -556,6 +559,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                 onTap: () async {
                   bool newS = !(data['isFrozen'] ?? false);
                   await _db.collection('users').doc(uid).update({'isFrozen': newS});
+                  if (!context.mounted) return;
                   Navigator.pop(context);
                 },
               ),
@@ -573,6 +577,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                   if (currentBanned) {
                     await _db.collection('users').doc(uid).update({'isBanned': false, 'banReason': null, 'banUntil': null});
                     await _logService.logAction(actionType: 'unban', targetId: uid, targetName: data['username'] ?? 'Adsız');
+                    if (!context.mounted) return;
                     Navigator.pop(context);
                   } else {
                     Navigator.pop(context);
@@ -586,6 +591,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                 onTap: () async {
                   bool newS = !(data['isDeleted'] ?? false);
                   await _db.collection('users').doc(uid).update({'isDeleted': newS});
+                  if (!context.mounted) return;
                   Navigator.pop(context);
                 },
               ),
@@ -651,6 +657,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                   'banUntil': until != null ? Timestamp.fromDate(until) : null,
                 });
                 await _logService.logAction(actionType: 'ban', targetId: uid, targetName: username);
+                if (!context.mounted) return;
                 Navigator.pop(context);
               }, 
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
@@ -679,6 +686,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
             onPressed: () async {
               dynamic val = isDouble ? (double.tryParse(controller.text) ?? 0.0) : (int.tryParse(controller.text) ?? 0);
               await _db.collection('users').doc(uid).update({field: val});
+              if (!context.mounted) return;
               Navigator.pop(context);
             },
             child: const Text('Güncelle'),
@@ -724,6 +732,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
             ElevatedButton(
               onPressed: () async {
                 await _db.collection('users').doc(uid).update({'badges': tempBadges});
+                if (!context.mounted) return;
                 Navigator.pop(context);
               },
               child: const Text('Kaydet'),
@@ -819,6 +828,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
             title: Text((data['isApproved'] ?? false) ? 'Onayı Kaldır' : 'Onayla'),
             onTap: () async {
               await _db.collection('events').doc(id).update({'isApproved': !(data['isApproved'] ?? false)});
+              if (!context.mounted) return;
               Navigator.pop(context);
             },
           ),
@@ -827,6 +837,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
             title: Text((data['isPinned'] ?? false) ? 'Sabitlemeyi Kaldır' : 'Başa Sabitle'),
             onTap: () async {
               await _db.collection('events').doc(id).update({'isPinned': !(data['isPinned'] ?? false)});
+              if (!context.mounted) return;
               Navigator.pop(context);
             },
           ),
@@ -835,6 +846,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
             title: Text((data['isFeatured'] ?? false) ? 'Öne Çıkarmayı Kaldır' : 'Öne Çıkar (Haftanın Fotoğrafları)'),
             onTap: () async {
               await _db.collection('events').doc(id).update({'isFeatured': !(data['isFeatured'] ?? false)});
+              if (!context.mounted) return;
               Navigator.pop(context);
             },
           ),
@@ -843,6 +855,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
             title: Text((data['isArchived'] ?? false) ? 'Arşivden Çıkar' : 'Arşivle'),
             onTap: () async {
               await _db.collection('events').doc(id).update({'isArchived': !(data['isArchived'] ?? false)});
+              if (!context.mounted) return;
               Navigator.pop(context);
             },
           ),
@@ -946,6 +959,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                 'members': [],
                 'createdAt': FieldValue.serverTimestamp(),
               });
+              if (!context.mounted) return;
               Navigator.pop(context);
             },
             child: const Text('Ekle'),
@@ -1019,6 +1033,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                 'name': nameC.text,
                 'description': descC.text,
               });
+              if (!context.mounted) return;
               Navigator.pop(context);
             },
             child: const Text('Güncelle'),
@@ -1039,6 +1054,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
           ElevatedButton(
             onPressed: () async {
               await _db.collection('communities').doc(id).delete();
+              if (!context.mounted) return;
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),

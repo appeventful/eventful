@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'notification_service.dart';
-import 'score_service.dart' as score;
+import 'score_service.dart';
 
 class CommentService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -66,7 +66,7 @@ class CommentService {
       await _processMentions(eventId, text, userName, user.uid);
       
       // Auto badge check for 'chatter'
-      await score.ScoreService().checkAndAwardBadges(user.uid);
+      await ScoreService.instance.checkAndAwardBadges(user.uid);
     }
   }
 

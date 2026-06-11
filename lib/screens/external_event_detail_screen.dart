@@ -147,7 +147,7 @@ class _ExternalEventDetailScreenState extends State<ExternalEventDetailScreen> {
                     event['description'] ?? 'Açıklama bulunmuyor.',
                     style: TextStyle(
                       fontSize: 15, 
-                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7) ?? Colors.grey,
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ?? Colors.grey,
                       height: 1.5
                     ),
                   ),

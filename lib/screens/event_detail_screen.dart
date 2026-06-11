@@ -15,11 +15,10 @@ import '../models/user_model.dart';
 import '../widgets/custom_avatar.dart';
 import '../widgets/shimmer_effect.dart';
 import 'profile_screen.dart';
-import 'attendance_screen.dart';
 import 'edit_event_screen.dart';
 import 'participants_list_screen.dart';
-import '../services/notification_service.dart';
 import '../services/rating_service.dart';
+import '../services/score_service.dart';
 import '../services/score_service.dart';
 import '../services/comment_service.dart';
 import '../utils/sharing_templates.dart';
@@ -90,14 +89,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     );
   }
 
-  void _scrollToChat() {
-    Scrollable.ensureVisible(
-      _chatKey.currentContext!,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
-  }
-
   void _requestReferenceHelp(Map<String, dynamic> event) async {
     final TextEditingController reasonController = TextEditingController();
     
@@ -141,7 +132,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     .get();
                 
                 if (existing.docs.isNotEmpty) {
-                  if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Zaten bu etkinlik için açık bir talebiniz bulunuyor.')));
+                  if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Zaten bu etkinlik için açık bir talebiniz bulunuyor.')));
                   return;
                 }
 
@@ -170,14 +161,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   'timestamp': FieldValue.serverTimestamp(),
                 });
 
-                if (mounted) {
+                if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: Text('Talebiniz Yardımlaşma Merkezi\'ne gönderildi!'),
                     backgroundColor: Colors.green,
                   ));
                 }
               } catch (e) {
-                if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Hata: $e')));
+                if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Hata: $e')));
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, foregroundColor: Colors.white),
@@ -228,7 +219,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       // Add "herkes" option for admins/mods/creators
       bool isAdmin = currentUser?.email == 'fatihkull17@gmail.com';
       var userDoc = await db.collection('users').doc(currentUser?.uid).get();
-      bool isModerator = userDoc.exists && (userDoc.data() as Map<String, dynamic>)['role'] == 'moderator';
+      bool isModerator = userDoc.exists && userDoc.data()?['role'] == 'moderator';
       bool isCreator = creatorId == currentUser?.uid;
 
       if (isAdmin || isModerator || isCreator) {
@@ -1388,7 +1379,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               await db.collection('events').doc(widget.eventId).update({
                 'participants': FieldValue.arrayRemove([currentUser?.uid])
               });
-              if (!mounted) return;
+              if (!context.mounted) return;
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Etkinlikten ayrıldınız.')));
             },
@@ -1557,7 +1548,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   void _confirmGenerateRefCode() async {
     final userDoc = await db.collection('users').doc(currentUser?.uid).get();
     if (!mounted) return;
-    final userData = userDoc.data() as Map<String, dynamic>?;
+    final userData = userDoc.data();
     final isRestricted = userData?['isRestricted'] ?? false;
 
     if (isRestricted) {
@@ -1569,7 +1560,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     final eventDoc = await db.collection('events').doc(widget.eventId).get();
     if (!mounted) return;
-    final eventData = eventDoc.data() as Map<String, dynamic>?;
+    final eventData = eventDoc.data();
     final List referrals = eventData?['referrals'] ?? [];
 
     bool joinedViaReference = referrals.any((r) => r['user'] == currentUser?.uid);
@@ -1613,7 +1604,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   void _provideReferenceToUser(Map<String, dynamic> request, String requestId) async {
     final userDoc = await db.collection('users').doc(currentUser?.uid).get();
     if (!mounted) return;
-    final userData = userDoc.data() as Map<String, dynamic>?;
+    final userData = userDoc.data();
     if (userData?['isRestricted'] == true) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Kısıtlı hesaplar referans olamaz.'), backgroundColor: Colors.red));
       return;
@@ -1621,7 +1612,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     final eventDoc = await db.collection('events').doc(widget.eventId).get();
     if (!mounted) return;
-    final eventData = eventDoc.data() as Map<String, dynamic>?;
+    final eventData = eventDoc.data();
     final List referrals = eventData?['referrals'] ?? [];
     if (referrals.any((r) => r['user'] == currentUser?.uid)) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Bu etkinliğe referans ile katıldığınız için başkasına referans olamazsınız.'), backgroundColor: Colors.red));
@@ -1784,7 +1775,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   comment: ratingCommentController.text.trim(),
                 );
 
-                if (mounted) {
+                if (context.mounted) {
                   Navigator.pop(context); // Remove loading
                   Navigator.pop(context); // Remove rating dialog
 
@@ -1792,7 +1783,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   setState(() {});
                 }
               } catch (e) {
-                if (mounted) {
+                if (context.mounted) {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Hata: ${e.toString()}'), backgroundColor: Colors.red));
                 }
@@ -1910,6 +1901,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               if (reason.isEmpty) return;
 
               final myDoc = await db.collection('users').doc(currentUser?.uid).get();
+              if (!mounted) return;
               final myName = myDoc.data()?['name'] ?? 'Kullanıcı';
 
               await db.collection('reports').add({
@@ -1964,7 +1956,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 reason: reason,
               );
 
-              if (mounted) {
+              if (context.mounted) {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Yorum bildirildi.')));
               }
@@ -2172,7 +2164,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     await db.collection('events').doc(widget.eventId).collection('photos').doc(photoId).update({'status': status});
     
     if (status == 'approved' && uploaderUid != null) {
-      await ScoreService().updateScore(
+      await ScoreService.instance.updateScore(
         userId: uploaderUid,
         amount: ScoreService.photoShareReward,
         reason: 'Fotoğraf Paylaşım Ödülü',
@@ -2180,30 +2172,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       );
     }
     
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(status == 'approved' ? 'Fotoğraf onaylandı.' : 'Fotoğraf reddedildi.')));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(status == 'approved' ? 'Fotoğraf onaylandı.' : 'Fotoğraf reddedildi.')));
   }
 }
 
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-
-  final TabBar _tabBar;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      child: _tabBar,
-    );
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
-  }
-}

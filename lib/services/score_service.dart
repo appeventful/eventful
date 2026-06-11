@@ -5,10 +5,9 @@ import 'notification_service.dart';
 import '../utils/constants.dart';
 
 class ScoreService {
-  final FirebaseFirestore _db;
-  
-  ScoreService({FirebaseFirestore? firestore}) 
-    : _db = firestore ?? FirebaseFirestore.instance;
+  ScoreService._();
+  static final ScoreService instance = ScoreService._();
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   // Score Types and Values
   static const int dailyLogin = 3;
@@ -38,26 +37,21 @@ class ScoreService {
     final userRef = _db.collection('users').doc(userId);
 
     bool alreadyProcessed = await _db.runTransaction<bool>((transaction) async {
-      // Idempotency check: if relatedId is provided, check if this point change was already applied
       if (relatedId != null) {
-        // Create a deterministic ID for the point history entry to prevent double scoring
-        // We sanitize the reason to use it as a document ID
         final sanitizedReason = reason.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
         final historyId = "${relatedId}_$sanitizedReason";
         final historyRef = userRef.collection('pointHistory').doc(historyId);
         final historyDoc = await transaction.get(historyRef);
         
         if (historyDoc.exists) {
-          return true; // Already processed this event/reason combo
+          return true;
         }
 
-        // 1. Update user points
         transaction.update(userRef, {
           'points': FieldValue.increment(amount),
           if (updateLastLogin) 'lastLogin': FieldValue.serverTimestamp(),
         });
 
-        // 2. Save to history with deterministic ID
         transaction.set(historyRef, {
           'amount': amount,
           'reason': reason,
@@ -66,7 +60,6 @@ class ScoreService {
         });
         return false;
       } else {
-        // No relatedId, add a random history entry
         transaction.update(userRef, {
           'points': FieldValue.increment(amount),
           if (updateLastLogin) 'lastLogin': FieldValue.serverTimestamp(),
@@ -85,7 +78,6 @@ class ScoreService {
 
     if (alreadyProcessed) return;
 
-    // 3. Send notification OUTSIDE transaction
     await NotificationService.sendNotification(
       recipientId: userId,
       title: amount > 0 ? 'Tebrikler, Puan Kazandın! ✨' : 'Eyvah, Puan Kaybettin! 📉',
@@ -93,7 +85,6 @@ class ScoreService {
       data: {'type': 'point_change'},
     );
 
-    // If it's a penalty point, check for restrictions
     if (amount < 0) {
       await _checkAndApplyRestriction(userId);
     } else {
@@ -112,12 +103,10 @@ class ScoreService {
     
     List<String> newBadges = [];
 
-    // 1. Loyal User (500+ points)
     if (points >= 500 && !currentBadges.contains('loyal_user')) {
       newBadges.add('loyal_user');
     }
 
-    // 2. Event Master (10+ organized events)
     final eventsQuery = await _db.collection('events')
         .where('creatorId', isEqualTo: userId)
         .where('isApproved', isEqualTo: true)
@@ -127,17 +116,14 @@ class ScoreService {
       newBadges.add('event_master');
     }
 
-    // 3. Founder Sync (Backup check)
     if (data['isFounder'] == true && !currentBadges.contains('founder')) {
       newBadges.add('founder');
     }
 
-    // 4. Verified Badge (Profile photo approved)
     if (data['isProfileImageApproved'] == true && !currentBadges.contains('verified')) {
       newBadges.add('verified');
     }
 
-    // 5. Explorer Badge (5+ different categories)
     if (!currentBadges.contains('explorer')) {
       final attendedSnapshot = await _db.collection('events')
           .where('attendanceYes', arrayContains: userId)
@@ -154,7 +140,6 @@ class ScoreService {
       }
     }
 
-    // 6. Photographer Badge (10+ approved photos)
     if (!currentBadges.contains('photographer')) {
       final photosSnapshot = await _db.collectionGroup('photos')
           .where('userId', isEqualTo: userId)
@@ -166,7 +151,6 @@ class ScoreService {
       }
     }
 
-    // 7. Chatter Badge (50+ comments)
     if (!currentBadges.contains('chatter')) {
       final commentsSnapshot = await _db.collectionGroup('comments')
           .where('userId', isEqualTo: userId)
@@ -177,7 +161,6 @@ class ScoreService {
       }
     }
 
-    // 8. Helper Badge (Trust score > 4.5 and at least 5 ratings)
     if (!currentBadges.contains('helper')) {
       double trust = (data['trustScore'] ?? 0.0).toDouble();
       int ratings = (data['ratingCount'] ?? 0).toInt();
@@ -186,7 +169,6 @@ class ScoreService {
       }
     }
 
-    // 9. Top Organizer Badge (20+ approved events)
     if (!currentBadges.contains('top_organizer')) {
       final eventsQuery = await _db.collection('events')
           .where('creatorId', isEqualTo: userId)
@@ -215,7 +197,6 @@ class ScoreService {
     }
   }
 
-  // Restriction check and application
   Future<void> _checkAndApplyRestriction(String userId) async {
     bool exceeded = await hasExceededAbsenceLimit(userId);
     if (exceeded) {
@@ -235,13 +216,12 @@ class ScoreService {
     }
   }
 
-  // Daily Login Check
   Future<void> checkDailyLogin() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
     final now = DateTime.now();
-    final dateId = "${now.year}${now.month}${now.day}"; // YYYYMMDD
+    final dateId = "${now.year}${now.month}${now.day}"; 
     
     await updateScore(
       userId: user.uid,
@@ -301,7 +281,6 @@ class ScoreService {
     return !(await needsReference(userId));
   }
 
-  // Increment reference participation and lift restriction if needed
   Future<void> incrementReferenceParticipation(String userId) async {
     final userRef = _db.collection('users').doc(userId);
     
@@ -324,7 +303,6 @@ class ScoreService {
       transaction.update(userRef, updates);
     });
 
-    // Send notification if restriction is lifted
     final finalDoc = await userRef.get();
     if (finalDoc.exists && finalDoc.data()?['isRestricted'] == false && finalDoc.data()?['referenceParticipationCount'] == 0) {
        await NotificationService.sendNotification(
@@ -349,15 +327,9 @@ class ScoreService {
     return null;
   }
 
-  bool _isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
-  }
-
-  // Check and apply score for participants based on attendance
   Future<void> processAttendanceScores(String eventId, String userId, String status) async {
     final eventRef = _db.collection('events').doc(eventId);
 
-    // 1. Transaction to mark as processed in the event document
     bool alreadyScored = await _db.runTransaction((transaction) async {
       final eventDoc = await transaction.get(eventRef);
       if (!eventDoc.exists) return true;
@@ -372,7 +344,6 @@ class ScoreService {
 
     if (alreadyScored) return;
 
-    // 2. Award or deduct points using updateScore with a unique relatedId
     if (status == 'attendanceYes') {
       await updateScore(
         userId: userId,
@@ -395,7 +366,6 @@ class ScoreService {
     }
   }
 
-  // Check if organizer fulfilled their duty to take attendance
   Future<void> checkOrganizerAttendanceDuty(String eventId) async {
     final eventDoc = await _db.collection('events').doc(eventId).get();
     if (!eventDoc.exists) return;
@@ -407,12 +377,11 @@ class ScoreService {
     if (creatorId == null) return;
 
     final List participants = data['participants'] ?? [];
-    if (participants.length <= 1) return; // Only creator is there, no duty
+    if (participants.length <= 1) return; 
 
     final List attended = data['attendanceYes'] ?? [];
     final List absent = data['attendanceNo'] ?? [];
     
-    // 1. Process scores for everyone marked (if not already done)
     for (String uid in attended) {
       await processAttendanceScores(eventId, uid, 'attendanceYes');
     }
@@ -420,7 +389,6 @@ class ScoreService {
       await processAttendanceScores(eventId, uid, 'attendanceNo');
     }
 
-    // 2. Check 80% rule only if event is old enough or everyone is marked
     final int guestCount = participants.where((id) => id != creatorId).length;
     final int markedCount = (attended.where((id) => id != creatorId).length) + 
                              (absent.where((id) => id != creatorId).length);
@@ -438,10 +406,8 @@ class ScoreService {
     bool allMarked = markedCount >= guestCount;
 
     if (isOldEvent || allMarked) {
-      // 1.5. Otomatik devamsızlık işleme (İşaretlenmemiş olanlar)
       for (String uid in participants) {
         if (uid != creatorId && !attended.contains(uid) && !absent.contains(uid)) {
-          // Hiç işaretlenmemiş katılımcıya otomatik devamsızlık cezası ver
           await processAttendanceScores(eventId, uid, 'attendanceNo');
           await _db.collection('events').doc(eventId).update({
             'attendanceNo': FieldValue.arrayUnion([uid]),
@@ -449,7 +415,6 @@ class ScoreService {
         }
       }
 
-      // 80% Rule Check
       if (guestCount > 0) {
         if (markedCount / guestCount < 0.8) {
           await updateScore(
@@ -461,13 +426,11 @@ class ScoreService {
         }
       }
       
-      // Mark as checked and archive the event
       await _db.collection('events').doc(eventId).update({
         'isAttendanceDutyChecked': true,
         'isArchived': true,
       });
     } else if (DateTime.now().isAfter(eventDate) && !allMarked) {
-      // Send a reminder notification if the event just finished
       await NotificationService.sendNotification(
         recipientId: creatorId,
         title: 'Yoklama Hatırlatması ⏰',
@@ -482,7 +445,6 @@ class ScoreService {
 
   Future<void> checkUserPendingDuties(String userId) async {
     try {
-      // Sadece son 5 unchecked etkinliği kontrol et (Performans için)
       final query = await _db.collection('events')
           .where('creatorId', isEqualTo: userId)
           .where('isAttendanceDutyChecked', isEqualTo: false)
@@ -490,7 +452,6 @@ class ScoreService {
           .get();
 
       for (var doc in query.docs) {
-        // Her işlem arasına küçük bir gecikme ekleyerek Firestore yazma yoğunluğunu azaltalım
         await checkOrganizerAttendanceDuty(doc.id);
         await Future.delayed(const Duration(milliseconds: 500));
       }

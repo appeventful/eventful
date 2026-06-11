@@ -23,7 +23,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   void _checkDuty() async {
-    final ScoreService scoreService = ScoreService();
+    final ScoreService scoreService = ScoreService.instance;
     try {
       await scoreService.checkOrganizerAttendanceDuty(widget.eventId);
     } catch (e) {
@@ -219,7 +219,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       }
 
       // 2. Process points immediately for better UX
-      await ScoreService().processAttendanceScores(widget.eventId, userId, status);
+      await ScoreService.instance.processAttendanceScores(widget.eventId, userId, status);
 
       if (!mounted) return;
 
@@ -245,7 +245,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('İptal')),
           ElevatedButton(
             onPressed: () async {
-              await ScoreService().checkOrganizerAttendanceDuty(widget.eventId);
+              await ScoreService.instance.checkOrganizerAttendanceDuty(widget.eventId);
               if (mounted) {
                 Navigator.pop(context); // Close dialog
                 Navigator.pop(context); // Exit screen

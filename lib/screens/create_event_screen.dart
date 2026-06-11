@@ -32,7 +32,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   late final TextEditingController _addressController;
   final _quotaController = TextEditingController(text: '0');
   final _requirementsController = TextEditingController();
-  final ScoreService _scoreService = ScoreService();
+  final ScoreService _scoreService = ScoreService.instance;
   final StorageService _storageService = StorageService();
   
   File? _selectedImageFile;

@@ -56,8 +56,8 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
     if (!_isMe) {
       _loadSocialStatus();
     } else if (_currentUserId != null) {
-      ScoreService().checkUserPendingDuties(_currentUserId!);
-      ScoreService().checkDailyLogin();
+      ScoreService.instance.checkUserPendingDuties(_currentUserId!);
+      ScoreService.instance.checkDailyLogin();
     }
     _checkCommunityModStatus();
   }
@@ -738,7 +738,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
       }
 
       if (launched && _isMe && !user.isInstagramFollowed) {
-        await ScoreService().updateScore(
+        await ScoreService.instance.updateScore(
           userId: user.uid,
           amount: ScoreService.instagramFollowReward,
           reason: 'Instagram Takip Ödülü',

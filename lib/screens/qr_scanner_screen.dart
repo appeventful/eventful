@@ -68,7 +68,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
         });
 
         // 3. Award points
-        await ScoreService().processAttendanceScores(widget.eventId, uid, 'attendanceYes');
+        await ScoreService.instance.processAttendanceScores(widget.eventId, uid, 'attendanceYes');
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
