@@ -25,6 +25,8 @@ def flutter_root
   raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig and rerunning flutter pub get"
 end
 
+load File.join(flutter_root, 'packages', 'flutter_tools', 'bin', 'podhelper.rb')
+
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
