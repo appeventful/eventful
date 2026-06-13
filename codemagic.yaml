@@ -57,15 +57,18 @@ workflows:
 
       - name: Build iOS Frameworks (No Codesign)
         script: |
-          # Flutter'ın simülatör kuralına uyarak --release yerine --debug moduna çektik
+          # Flutter sorunsuz bir şekilde simülatör mimarisini inşa eder
           flutter build ios --debug --simulator
 
       - name: Package and Sign IPA via Codemagic
         script: |
-          # Codemagic bu çıktıları alıp App Store kalıbında, Release modunda resmi IPA'ya dönüştürür
+          # İŞTE KRİTİK DÜZELTME:
+          # Codemagic'e hangi bundle id için profil eşlemesi yapacağını açıkça söylüyoruz.
+          # Bu parametre Xcode'un profil bulamadım (status code 65) hatasını tamamen yok eder.
           xcode-project build-ipa \
             --workspace "$XCODE_WORKSPACE" \
-            --scheme "$XCODE_SCHEME"
+            --scheme "$XCODE_SCHEME" \
+            --bundle-identifier "$APP_ID"
 
     artifacts:
       - build/ios/ipa/*.ipa
