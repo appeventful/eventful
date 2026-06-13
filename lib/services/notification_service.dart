@@ -33,7 +33,7 @@ class NotificationService {
         ?.requestNotificationsPermission();
 
     await _localNotifications.initialize(
-      initSettings,
+      settings: initSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         _handleNotificationClick(response.payload);
       },
@@ -183,10 +183,10 @@ class NotificationService {
     final String payload = Uri(queryParameters: payloadData).query;
 
     _localNotifications.show(
-      message.hashCode,
-      message.notification?.title,
-      message.notification?.body,
-      details,
+      id: message.hashCode,
+      title: message.notification?.title,
+      body: message.notification?.body,
+      notificationDetails: details,
       payload: payload,
     );
   }

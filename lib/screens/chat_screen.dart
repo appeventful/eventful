@@ -553,25 +553,38 @@ class _ChatScreenState extends State<ChatScreen> {
                                       if (!isMe && !isDeleted)
                                         Padding(
                                           padding: const EdgeInsets.only(left: 4, bottom: 2),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                data['senderName'] ?? widget.receiverName ?? '',
-                                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodySmall?.color),
-                                              ),
-                                              if (receiver.isFounder) ...[
-                                                  const SizedBox(width: 4),
-                                                  const Icon(Icons.stars_rounded, size: 12, color: Colors.amber),
+                                          child: FutureBuilder<DocumentSnapshot>(
+                                            future: FirebaseFirestore.instance.collection('users').doc(data['senderId']).get(),
+                                            builder: (context, userSnapshot) {
+                                              if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+                                                return Text(
+                                                  data['senderName'] ?? widget.receiverName ?? '',
+                                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodySmall?.color),
+                                                );
+                                              }
+                                              
+                                              final senderModel = UserModel.fromFirestore(userSnapshot.data!);
+                                              return Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    senderModel.name,
+                                                    style: senderModel.getNameStyle(context, fontSize: 11, isBold: true),
+                                                  ),
+                                                  if (senderModel.isFounder) ...[
+                                                    const SizedBox(width: 4),
+                                                    const Icon(Icons.stars_rounded, size: 12, color: Colors.amber),
+                                                  ],
+                                                  if (senderModel.role == 'admin') ...[
+                                                    const SizedBox(width: 4),
+                                                    const Icon(Icons.workspace_premium_rounded, size: 14, color: Colors.blueAccent),
+                                                  ] else if (senderModel.role == 'moderator') ...[
+                                                    const SizedBox(width: 4),
+                                                    const Icon(Icons.shield_rounded, size: 12, color: Colors.purple),
+                                                  ],
                                                 ],
-                                                if (receiver.role == 'admin') ...[
-                                                  const SizedBox(width: 4),
-                                                  const Icon(Icons.workspace_premium_rounded, size: 14, color: Colors.blueAccent),
-                                                ] else if (receiver.role == 'moderator') ...[
-                                                  const SizedBox(width: 4),
-                                                  const Icon(Icons.shield_rounded, size: 12, color: Colors.purple),
-                                                ],
-                                            ],
+                                              );
+                                            },
                                           ),
                                         ),
                                       GestureDetector(
@@ -750,22 +763,37 @@ class _ChatScreenState extends State<ChatScreen> {
                               if (!isMe && !isDeleted)
                                 Padding(
                                   padding: const EdgeInsets.only(left: 4, bottom: 2),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        data['senderName'] ?? 'Kullanıcı',
-                                        style: TextStyle(
-                                          fontSize: 11, 
-                                          fontWeight: FontWeight.bold, 
-                                          color: isSenderModerator ? Colors.teal : Theme.of(context).textTheme.bodySmall?.color
-                                        ),
-                                      ),
-                                      if (isSenderModerator) ...[
-                                        const SizedBox(width: 4),
-                                        const Icon(Icons.verified_user_rounded, color: Colors.teal, size: 12),
-                                      ],
-                                    ],
+                                  child: FutureBuilder<DocumentSnapshot>(
+                                    future: FirebaseFirestore.instance.collection('users').doc(data['senderId']).get(),
+                                    builder: (context, userSnapshot) {
+                                      if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+                                        return Text(
+                                          data['senderName'] ?? 'Kullanıcı',
+                                          style: TextStyle(
+                                            fontSize: 11, 
+                                            fontWeight: FontWeight.bold, 
+                                            color: isSenderModerator ? Colors.teal : Theme.of(context).textTheme.bodySmall?.color
+                                          ),
+                                        );
+                                      }
+
+                                      final senderModel = UserModel.fromFirestore(userSnapshot.data!);
+                                      return Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            senderModel.name,
+                                            style: senderModel.getNameStyle(context, fontSize: 11, isBold: true).copyWith(
+                                              color: (senderModel.supporterTier == 'none' && isSenderModerator) ? Colors.teal : null,
+                                            ),
+                                          ),
+                                          if (isSenderModerator) ...[
+                                            const SizedBox(width: 4),
+                                            const Icon(Icons.verified_user_rounded, color: Colors.teal, size: 12),
+                                          ],
+                                        ],
+                                      );
+                                    },
                                   ),
                                 ),
                               GestureDetector(

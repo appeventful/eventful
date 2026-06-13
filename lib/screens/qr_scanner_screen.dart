@@ -127,6 +127,8 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                     return const Icon(Icons.camera_front);
                   case CameraFacing.back:
                     return const Icon(Icons.camera_rear);
+                  default:
+                    return const Icon(Icons.camera_rear);
                 }
               },
             ),

@@ -41,6 +41,11 @@ const String defaultKVKK = '''KVKK Aydınlatma Metni:
 - İşleme Amacı: Etkinlik yönetimi ve topluluk iletişimi
 - Haklarınız: Verilerinize erişme, düzeltme ve silme hakkına sahipsiniz.''';
 
+// Supporter Colors
+const Color kBronzeColor = Color(0xFFCD7F32);
+const Color kSilverColor = Color(0xFFC0C0C0);
+const Color kGoldColor = Color(0xFFFFD700);
+
 const List<Map<String, dynamic>> availableBadges = [
   {'id': 'founder', 'name': 'Kurucu', 'icon': '🌟', 'color': 'amber', 'description': 'Uygulamanın başlangıç döneminde aramıza katılan öncü üyelerimizden birisiniz.'},
   {'id': 'verified', 'name': 'Onaylı Üye', 'icon': '✅', 'color': 'blue', 'description': 'Kimliği ve profil fotoğrafı moderatörler tarafından doğrulanmış güvenilir üye.'},

@@ -1,11 +1,34 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+import 'package:etkinlik_io_api/etkinlik_io_api.dart';
+import 'package:dio/dio.dart';
 
 class EventScraperService {
   static const String _apiToken = "aa492d9164a308fe8f9d75af035838f9";
-  static const String _baseUrl = "https://etkinlik.io/api/v2";
+  
+  static final _dio = Dio(BaseOptions(
+    baseUrl: 'https://etkinlik.io/api/v2/',
+    headers: {'X-Etkinlik-Token': _apiToken},
+    connectTimeout: const Duration(seconds: 15),
+    receiveTimeout: const Duration(seconds: 15),
+  ));
+
+  static final _api = EtkinlikIoApi(dio: _dio);
+
+  // SDK transformer'ı olmayan temiz bir dio (manuel fetch için)
+  static final _cleanDio = Dio(BaseOptions(
+    baseUrl: 'https://etkinlik.io/api/v2/',
+    headers: {'X-Etkinlik-Token': _apiToken},
+    connectTimeout: const Duration(seconds: 15),
+    receiveTimeout: const Duration(seconds: 15),
+  ))..interceptors.add(InterceptorsWrapper(
+    onRequest: (options, handler) {
+      if (options.path.startsWith('/')) {
+        options.path = options.path.substring(1);
+      }
+      return handler.next(options);
+    },
+  ));
 
   static final Map<String, int> _cityIds = {
     'Adana': 1, 'Adıyaman': 2, 'Afyon': 3, 'Afyonkarahisar': 85, 'Ağrı': 4, 'Aksaray': 5,
@@ -22,87 +45,80 @@ class EventScraperService {
     'Ordu': 63, 'Osmaniye': 64, 'Rize': 65, 'Sakarya': 66, 'Samsun': 67, 'Şanlıurfa': 71,
     'Siirt': 68, 'Sinop': 69, 'Şırnak': 72, 'Sivas': 70, 'Tekirdağ': 73, 'Tokat': 74,
     'Trabzon': 75, 'Tunceli': 76, 'Uşak': 77, 'Van': 78, 'Yalova': 79, 'Yozgat': 80,
-    'Zonguldak': 81
+    'Zonguldak': 81, 'İzmit': 52, 'Adapazarı': 66, 'İçel': 58, 'Mersin (İçel)': 58,
+    'Antakya': 37, 'İskenderun': 37
   };
 
   static Future<List<Map<String, dynamic>>> fetchEvents(String city) async {
     try {
-      Map<String, String> queryParams = {
-        'limit': '100',
-      };
-
+      String? cityIdsStr;
       if (city != 'Tümü' && _cityIds.containsKey(city)) {
-        queryParams['city_ids'] = _cityIds[city].toString();
+        cityIdsStr = _cityIds[city]!.toString();
       }
 
-      final uri = Uri.parse('$_baseUrl/events').replace(queryParameters: queryParams);
-      
-      final response = await http.get(
-        uri,
-        headers: {'X-Etkinlik-Token': _apiToken},
-      ).timeout(const Duration(seconds: 15));
+      debugPrint("Etkinlik İsteği (Manuel): Şehir=$city, CityID=$cityIdsStr");
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        final List<dynamic> items = data['items'] ?? [];
+      // SDK deserialization hatası verdiği için manuel fetch yapıyoruz
+      final response = await _cleanDio.get('/events', queryParameters: {
+        if (cityIdsStr != null) 'city_ids': cityIdsStr,
+        'take': 100,
+        'sort_by': 'upcoming',
+      });
+
+      if (response.statusCode == 200 && response.data != null) {
+        final List<dynamic> items = response.data['items'] ?? [];
+        debugPrint("API Yanıtı: ${items.length} etkinlik bulundu.");
+
+        final List<Map<String, dynamic>> processedEvents = [];
         
-        final List<Map<String, dynamic>> processedEvents = items.where((item) {
-          final eventCity = item['venue']?['city']?['name']?.toString().toLowerCase() ?? '';
+        for (var item in items) {
+          final venue = item['venue'];
+          final eventCity = venue?['city']?['name']?.toString().toLowerCase() ?? '';
           final targetCity = city.toLowerCase();
-          final bool cityMatches = eventCity.contains(targetCity) || targetCity.contains(eventCity);
+          final bool cityMatches = city == 'Tümü' || eventCity.contains(targetCity) || targetCity.contains(eventCity);
           
-          if (!cityMatches) return false;
+          if (!cityMatches) continue;
 
-          // Bugünü ve geçmişi filtrele
-          final DateTime? eventDate = DateTime.tryParse(item['start'] ?? '');
-          if (eventDate == null) return false;
+          // Tarih işlemleri
+          final String? dateStr = item['start'];
+          if (dateStr == null) continue;
           
+          final DateTime eventDate = DateTime.parse(dateStr);
           final now = DateTime.now();
           final today = DateTime(now.year, now.month, now.day);
           
-          // Sadece bugünden sonraki (yarın ve sonrası) etkinlikleri al
-          return eventDate.isAfter(today.add(const Duration(days: 1)).subtract(const Duration(seconds: 1)));
-        }).map((item) {
-          // Resim URL'sini bulmak için tüm ihtimalleri tara
-          String? apiImageUrl;
+          final bool isFutureOrToday = eventDate.isAfter(today) || (eventDate.year == today.year && eventDate.month == today.month && eventDate.day == today.day);
           
-          if (item['poster'] != null) {
-            if (item['poster'] is String) {
-              apiImageUrl = item['poster'];
-            } else if (item['poster'] is Map) {
-              // Daha düşük boyutlu resimleri tercih et (Hız için)
-              apiImageUrl = item['poster']['large'] ?? item['poster']['url'] ?? item['poster']['original'];
-            }
-          }
-          
-          // Yedek alanları kontrol et
-          apiImageUrl ??= item['poster_url']?.toString() ?? item['image']?.toString();
-          
-          return {
+          if (!isFutureOrToday) continue;
+
+          String? imageUrl = item['poster_url'];
+          final category = item['category']?['name'] ?? '';
+
+          processedEvents.add({
             'externalId': item['id']?.toString() ?? '',
             'title': item['name'] ?? 'Başlıksız Etkinlik',
             'description': _cleanHtml(item['content'] ?? 'Detaylı bilgi bulunmuyor.'),
-            'location': item['venue']?['name'] ?? city,
-            'address': item['venue']?['address'] ?? '',
-            'latitude': double.tryParse(item['venue']?['lat']?.toString() ?? ''),
-            'longitude': double.tryParse(item['venue']?['lng']?.toString() ?? ''),
-            'city': city,
-            'date': DateTime.tryParse(item['start'] ?? '') ?? DateTime.now(),
-            'category': _mapToInternalCategory(item['category']?['name'] ?? ''),
-            'imageUrl': (apiImageUrl != null && apiImageUrl.isNotEmpty) 
-                ? apiImageUrl 
-                : _getFallbackImage(item['category']?['name'] ?? ''),
+            'location': venue?['name'] ?? city,
+            'address': venue?['address'] ?? '',
+            'latitude': double.tryParse(venue?['lat']?.toString() ?? ''),
+            'longitude': double.tryParse(venue?['lng']?.toString() ?? ''),
+            'city': city == 'Tümü' ? (venue?['city']?['name'] ?? 'İstanbul') : city,
+            'date': eventDate,
+            'category': _mapToInternalCategory(category),
+            'imageUrl': (imageUrl != null && imageUrl.isNotEmpty) 
+                ? imageUrl 
+                : _getFallbackImage(category),
             'link': item['url'] ?? '',
             'source': 'Etkinlik.io',
             'externalSource': true,
-          };
-        }).toList();
+          });
+        }
 
         return processedEvents;
       }
       return [];
     } catch (e) {
-      debugPrint("fetchEvents hatası: $e");
+      debugPrint("fetchEvents manuel hata: $e");
       return [];
     }
   }
@@ -110,7 +126,6 @@ class EventScraperService {
   static Future<void> scrapeAndSaveEvents({required String city, int limit = 10}) async {
     List<Map<String, dynamic>> events = await fetchEvents(city);
     
-    // Eğer bir limit varsa, rastgele günlerden seçmek için listeyi karıştır
     if (limit < events.length) {
       events.shuffle();
     }
@@ -121,19 +136,16 @@ class EventScraperService {
     for (var event in events) {
       if (saved >= limit) break;
       
-      // 1. Check by External ID (The most reliable for API)
       if (event['externalId'].isNotEmpty) {
         final existingById = await db.collection('events').where('externalId', isEqualTo: event['externalId']).get();
         if (existingById.docs.isNotEmpty) continue;
       }
 
-      // 2. Check by link
       if (event['link'].isNotEmpty) {
         final existingByLink = await db.collection('events').where('link', isEqualTo: event['link']).get();
         if (existingByLink.docs.isNotEmpty) continue;
       }
 
-      // 3. Check by Title + City + Date (Catch manual duplicates or same event with different link)
       final Timestamp eventTs = Timestamp.fromDate(event['date']);
       final existingByContent = await db.collection('events')
           .where('title', isEqualTo: event['title'])
@@ -160,23 +172,41 @@ class EventScraperService {
   static Future<void> scrapeOneFromEveryCity() async {
     for (String city in _cityIds.keys) {
       await scrapeAndSaveEvents(city: city, limit: 1);
-      // Small delay to avoid rate limiting
       await Future.delayed(const Duration(milliseconds: 500));
     }
   }
 
-  static Future<void> scrapeFiveFromSelectedCities(List<String> selectedCities) async {
-    for (String city in selectedCities) {
+  static Future<void> scrapeFiveFromSelectedCities(List<String> cities) async {
+    for (String city in cities) {
       await scrapeAndSaveEvents(city: city, limit: 5);
       await Future.delayed(const Duration(milliseconds: 500));
     }
   }
 
   static Future<Map<String, dynamic>> fetchFullEventDetails(String link) async {
-    // Since we don't have a specific API for full details by link alone, 
-    // and scraping HTML is fragile, we try to find it in the search results if possible,
-    // or just return empty for now as requested.
-    // In a real scenario, this would call the API's specific event endpoint if ID was known.
+    // Note: The SDK typically allows getting details by ID. 
+    // Since we usually have the ID in our system if it came from the API, 
+    // this method could be improved to take an ID.
+    // For now, keeping it consistent with previous signature but leveraging the SDK's models if we had the ID.
+    return {};
+  }
+
+  static Future<Map<String, dynamic>> fetchEventById(int id) async {
+    try {
+      final response = await _cleanDio.get('/events/$id');
+      if (response.statusCode == 200 && response.data != null) {
+        final item = response.data;
+        final venue = item['venue'];
+        return {
+          'description': _cleanHtml(item['content'] ?? ''),
+          'latitude': double.tryParse(venue?['lat']?.toString() ?? ''),
+          'longitude': double.tryParse(venue?['lng']?.toString() ?? ''),
+          'address': venue?['address'] ?? '',
+        };
+      }
+    } catch (e) {
+      debugPrint("fetchEventById error: $e");
+    }
     return {};
   }
 

@@ -77,13 +77,34 @@ class CommentTile extends StatelessWidget {
                     if (!isMyComment)
                       Padding(
                         padding: const EdgeInsets.only(left: 4, bottom: 2),
-                        child: Text(
-                          comment['userName'] ?? 'Anonim',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: isOrganizer ? Colors.orange : Colors.grey[600],
-                          ),
+                        child: FutureBuilder<DocumentSnapshot>(
+                          future: FirebaseFirestore.instance.collection('users').doc(comment['userId']).get(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData || !snapshot.data!.exists) {
+                              return Text(
+                                comment['userName'] ?? 'Anonim',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: isOrganizer ? Colors.orange : Colors.grey[600],
+                                ),
+                              );
+                            }
+                            
+                            final userData = UserModel.fromFirestore(snapshot.data!);
+                            return Text(
+                              userData.name,
+                              style: userData.getNameStyle(
+                                context,
+                                fontSize: 11,
+                                isBold: true,
+                              ).copyWith(
+                                color: (userData.supporterTier == 'none' && isOrganizer) 
+                                  ? Colors.orange 
+                                  : null,
+                              ),
+                            );
+                          },
                         ),
                       ),
                     GestureDetector(

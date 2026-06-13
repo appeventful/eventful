@@ -308,7 +308,15 @@ class _CreateEventButtonState extends State<_CreateEventButton> {
 
     setState(() => _isEnriching = true);
     try {
-      final enrichedData = await EventScraperService.fetchFullEventDetails(widget.event['link']);
+      final String? externalId = widget.event['externalId'];
+      Map<String, dynamic> enrichedData = {};
+      
+      if (externalId != null && externalId.isNotEmpty) {
+        enrichedData = await EventScraperService.fetchEventById(int.parse(externalId));
+      } else {
+        enrichedData = await EventScraperService.fetchFullEventDetails(widget.event['link']);
+      }
+
       if (mounted) {
         Navigator.push(
           context,

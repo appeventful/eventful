@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utils/constants.dart';
 
@@ -381,5 +382,55 @@ class UserModel {
     
     // Otherwise return empty (or could return characterImage as fallback if desired)
     return '';
+  }
+
+  TextStyle getNameStyle(BuildContext context, {double fontSize = 16, bool isBold = true}) {
+    Color? nameColor;
+    List<Shadow>? shadows;
+    FontWeight fontWeight = isBold ? FontWeight.bold : FontWeight.normal;
+
+    switch (supporterTier) {
+      case 'bronze':
+        nameColor = kBronzeColor;
+        break;
+      case 'silver':
+        nameColor = kSilverColor;
+        shadows = [
+          Shadow(
+            blurRadius: 10.0,
+            color: kSilverColor.withOpacity(0.5),
+            offset: const Offset(0, 0),
+          ),
+        ];
+        break;
+      case 'gold':
+        nameColor = kGoldColor;
+        shadows = [
+          Shadow(
+            blurRadius: 15.0,
+            color: kGoldColor.withOpacity(0.8),
+            offset: const Offset(0, 0),
+          ),
+          const Shadow(
+            blurRadius: 5.0,
+            color: Colors.white,
+            offset: Offset(0, 0),
+          ),
+        ];
+        break;
+      default:
+        // Standart renk, temanın varsayılan metin rengi
+        return TextStyle(
+          fontSize: fontSize,
+          fontWeight: fontWeight,
+        );
+    }
+
+    return TextStyle(
+      color: nameColor,
+      fontWeight: fontWeight,
+      fontSize: fontSize,
+      shadows: shadows,
+    );
   }
 }

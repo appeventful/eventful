@@ -497,12 +497,14 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
         const SizedBox(height: 12),
         Text(
           user.name, 
-          style: TextStyle(
-            fontSize: 24, 
-            fontWeight: FontWeight.w800,
+          style: user.getNameStyle(
+            context,
+            fontSize: 24,
+            isBold: true,
+          ).copyWith(
             color: isPassive ? Colors.grey : null,
             decoration: isPassive ? TextDecoration.lineThrough : null,
-          )
+          ),
         ),
         const SizedBox(height: 4),
         Text(
