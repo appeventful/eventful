@@ -62,11 +62,10 @@ workflows:
 
       - name: Package and Sign IPA via Codemagic
         script: |
-          # Parametreyi --bundle-id olarak güncelledik:
+          # Hata veren tüm argümanları temizledik; en sade ve otomatik eşleştirmeli sürüme geçtik
           xcode-project build-ipa \
             --workspace "$XCODE_WORKSPACE" \
-            --scheme "$XCODE_SCHEME" \
-            --bundle-id "$APP_ID"
+            --scheme "$XCODE_SCHEME"
 
     artifacts:
       - build/ios/ipa/*.ipa
