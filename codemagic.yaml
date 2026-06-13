@@ -37,7 +37,7 @@ workflows:
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 13.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
           
-          # Proje dosyalarının içine Team ID'nizi güvenli bir şekilde enjekte eder
+          # Proje dosyalarının içine Team ID'nizi enjekte eder
           sed -i '' "s/DEVELOPMENT_TEAM = [^;]*/DEVELOPMENT_TEAM = $APPLE_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
 
       - name: Set up code signing settings on Xcode project
@@ -59,12 +59,14 @@ workflows:
 
       - name: Flutter build IPA
         script: |
-          # En standart, temiz ve resmi Flutter iOS paketleme komutu.
-          # Bir önceki adımdaki 'use-profiles' sayesinde artık profil hatası vermeden doğrudan paketleyecektir.
+          # İŞTE EN ÖNEMLİ DEĞİŞİKLİK:
+          # Flutter'a yerel imzalama yapmamasını, sadece arşivi oluşturmasını ve 
+          # az önce 'use-profiles' ile kurduğumuz App Store Dağıtım profillerini baz almasını söylüyoruz.
           flutter build ipa --release \
             --export-method=app-store \
             --build-name=1.0.0 \
-            --build-number=1
+            --build-number=1 \
+            --no-codesign
 
     artifacts:
       - build/ios/ipa/*.ipa
