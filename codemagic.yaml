@@ -35,8 +35,9 @@ workflows:
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
 
       - name: Set up code signing settings on Xcode project
-        script: |
-          xcode-project use-profiles
+          script: |
+            # --create parametresi, hesapta sertifika yoksa Codemagic'in Admin yetkisiyle otomatik üretmesini sağlar
+            xcode-project use-profiles --create
 
       - name: Get Flutter packages
         script: |
