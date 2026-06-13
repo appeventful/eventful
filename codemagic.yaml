@@ -30,15 +30,18 @@ workflows:
         - pattern: 'dev'
 
     scripts:
-      - name: Force iOS Deployment Target to 15.0
+      - name: Force iOS Deployment Target and Development Team
         script: |
-          # Firebase paketlerinin iOS 15+ zorunluluğunu çözmek için proje hedefini günceller
+          # Firebase paketlerinin iOS 15+ zorunluluğunu çözer
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 13.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
+          
+          # Xcode projesi içindeki tüm Development Team satırlarını bulup doğrudan sizin Team ID'nizle ezer
+          sed -i '' 's/DEVELOPMENT_TEAM = [^;]*/DEVELOPMENT_TEAM = 98G75Q6ZPJ/g' ios/Runner.xcodeproj/project.pbxproj
 
       - name: Set up code signing settings on Xcode project
         script: |
           keychain initialize
-          # Apple Developer hesabından Admin yetkisiyle sertifikaları çeker/yoksa üretir
           app-store-connect fetch-signing-files "$APP_ID" --create
           xcode-project use-profiles
 
@@ -53,8 +56,7 @@ workflows:
 
       - name: Flutter build IPA
         script: |
-          # Flutter sertifika aramadan arşivi sorunsuz tamamlar.
-          # Sürüm numaralarını App Store kurallarına uygun olarak buraya gömüyoruz:
+          # Projeye Team ID gömdüğümüz için artık --no-codesign arşivi başarıyla tamamlayacaktır
           flutter build ipa --release \
             --export-method=app-store \
             --build-name=1.0.0 \
@@ -67,8 +69,6 @@ workflows:
 
     publishing:
       app_store_connect:
-        # İŞTE EN ÖNEMLİ NOKTA: Üstte imzasız üretilen IPA dosyasını,
-        # Codemagic entegrasyonu buradaki biletle (API Key) Apple sunucusuna gönderirken mühürler.
         auth: integration
       email:
         recipients:
