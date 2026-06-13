@@ -37,13 +37,14 @@ workflows:
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 13.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
           
-          # Proje dosyalarının içine Team ID'yi güvenli bir şekilde yazar
+          # Proje dosyalarının içine Team ID'yi agresif bir şekilde kazır
           sed -i '' "s/DEVELOPMENT_TEAM = [^;]*/DEVELOPMENT_TEAM = $APPLE_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
 
       - name: Set up code signing settings on Xcode project
         script: |
           keychain initialize
           app-store-connect fetch-signing-files "$APP_ID" --create
+          # --config-only parametresi olmadan profilleri xcode'a tam uyumlu gömeriz
           xcode-project use-profiles
 
       - name: Get Flutter packages
@@ -57,7 +58,11 @@ workflows:
 
       - name: Flutter build IPA
         script: |
-          # Hata veren parametreleri temizledik, en kararlı ve yalın derleme komutuna geçtik
+          # İŞTE KESİN ÇÖZÜM:
+          # Xcode imzalama motoruna (xcodebuild) doğrudan ortam değişkenleri üzerinden komut veriyoruz.
+          # Bu sayede alt SPM paketleri de dahil olmak üzere tüm yapılar bu takım kimliğini kullanmak zorunda kalacak.
+          export XC_DEVELOPMENT_TEAM="$APPLE_TEAM_ID"
+          
           flutter build ipa --release \
             --export-method=app-store \
             --build-name=1.0.0 \
