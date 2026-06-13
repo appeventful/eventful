@@ -37,10 +37,9 @@ workflows:
       - name: Set up code signing settings on Xcode project
         script: |
           keychain initialize
-          # Apple hesabından App Store profillerini üretir/indirir:
-          app-store-connect fetch-signing-files "$APP_ID" --provisioning-profile-type=IOS_APP_STORE --create
-          # İŞTE KRİTİK AYAR: Projenin imzalama türünü tamamen App Store moduna geçiriyoruz
-          xcode-project use-profiles --export-type=app-store
+          # Hata veren eski parametreleri kaldırıp güncel, sade sürüme geçtik:
+          app-store-connect fetch-signing-files "$APP_ID" --create
+          xcode-project use-profiles
 
       - name: Get Flutter packages
         script: |
@@ -53,7 +52,7 @@ workflows:
 
       - name: Flutter build IPA
         script: |
-          # Temiz ve hatasız bir release derlemesi tetikliyoruz
+          # Flutter derlemesini doğrudan App Store yöntemine mühürlüyoruz
           flutter build ipa --release --export-method=app-store
 
     artifacts:
