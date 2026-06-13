@@ -53,7 +53,7 @@ workflows:
       - name: Flutter build IPA
         script: |
           # Flutter derlemesini doğrudan App Store yöntemine mühürlüyoruz
-          flutter build ipa --release --export-method=app-store
+          flutter build ipa --release --export-method=app-store --codesign
 
     artifacts:
       - build/ios/ipa/*.ipa
