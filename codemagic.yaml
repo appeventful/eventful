@@ -33,7 +33,7 @@ workflows:
     scripts:
       - name: Force iOS Deployment Target and Development Team
         script: |
-          # Firebase paketlerinin iOS 15+ zorunluluğunu kesin olarak çözer
+          # Firebase paketlerinin iOS 15+ zorunluluğunu çözer
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 13.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
           
@@ -57,15 +57,12 @@ workflows:
 
       - name: Build iOS Frameworks (No Codesign)
         script: |
-          # Flutter'a sadece paketleri ve Swift entegrasyonlarını hazırlatıyoruz.
-          # Bu komut takım kontrolüne takılmaz, tıkır tıkır arşivi hazırlar.
-          flutter build ios --release --no-codesign
+          # --simulator bayrağı sayesinde Flutter imzalama kontrolü yapmadan mimariyi inşa eder
+          flutter build ios --release --simulator
 
       - name: Package and Sign IPA via Codemagic
         script: |
-          # İşte büyü burada gerçekleşiyor:
-          # Flutter'ın hazırladığı ham çıktıyı alıp, Codemagic CLI vasıtasıyla doğrudan 
-          # sizin Team ID'niz ve indirdiğimiz profillerle mühürleyip resmi .ipa haline getiriyoruz.
+          # Codemagic bu simülatör paketlerini alır ve resmi sertifikalarınızla gerçek cihaza uygun IPA'ya dönüştürür
           xcode-project build-ipa \
             --workspace "$XCODE_WORKSPACE" \
             --scheme "$XCODE_SCHEME"
