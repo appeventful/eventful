@@ -43,9 +43,7 @@ workflows:
       - name: Set up code signing settings on Xcode project
         script: |
           keychain initialize
-          # Apple Developer hesabından resmi App Store profillerini indirir
           app-store-connect fetch-signing-files "$APP_ID" --create
-          # İndirilen profilleri Xcode projesine mühürler
           xcode-project use-profiles
 
       - name: Get Flutter packages
@@ -59,9 +57,7 @@ workflows:
 
       - name: Flutter build IPA
         script: |
-          # İŞTE EN ÖNEMLİ DEĞİŞİKLİK:
-          # Flutter'a yerel imzalama yapmamasını, sadece arşivi oluşturmasını ve 
-          # az önce 'use-profiles' ile kurduğumuz App Store Dağıtım profillerini baz almasını söylüyoruz.
+          # Flutter sorunsuz bir şekilde imzasız arşivi üretiyor (Az önce başardığımız adım)
           flutter build ipa --release \
             --export-method=app-store \
             --build-name=1.0.0 \
@@ -75,6 +71,11 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
+        # İŞTE YENİ EKLEDİĞİMİZ KRİTİK AYARLAR:
+        # Codemagic bu komutla yukarıda üretilen imzasız IPA'yı alıp bulutta mühürler ve TestFlight'a gönderir.
+        submit_to_testflight: true
+        beta_build_localizations:
+          - group_name: "Eventful Beta Testers"
       email:
         recipients:
           - eventful@eventfulapp.org
