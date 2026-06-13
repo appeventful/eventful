@@ -57,7 +57,7 @@ workflows:
 
       - name: Flutter build IPA
         script: |
-          # Flutter sorunsuz bir şekilde imzasız arşivi üretiyor (Az önce başardığımız adım)
+          # Bir önceki adımda başarıyla geçen imzasız IPA üretim komutumuz
           flutter build ipa --release \
             --export-method=app-store \
             --build-name=1.0.0 \
@@ -71,11 +71,8 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
-        # İŞTE YENİ EKLEDİĞİMİZ KRİTİK AYARLAR:
-        # Codemagic bu komutla yukarıda üretilen imzasız IPA'yı alıp bulutta mühürler ve TestFlight'a gönderir.
+        # Hata veren alt grubu temizledik, TestFlight gönderimini en sade haliyle kilitledik:
         submit_to_testflight: true
-        beta_build_localizations:
-          - group_name: "Eventful Beta Testers"
       email:
         recipients:
           - eventful@eventfulapp.org
