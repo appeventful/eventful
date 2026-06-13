@@ -17,6 +17,8 @@ workflows:
         XCODE_WORKSPACE: "ios/Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
         APP_ID: "com.appeventful.eventful"
+        # Team ID'nizi buraya küresel değişken olarak mühürlüyoruz
+        APPLE_TEAM_ID: "98G75Q6ZPJ"
       flutter: stable
       xcode: latest
       cocoapods: default
@@ -36,8 +38,8 @@ workflows:
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 13.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
           
-          # Xcode projesi içindeki tüm Development Team satırlarını bulup doğrudan sizin Team ID'nizle ezer
-          sed -i '' 's/DEVELOPMENT_TEAM = [^;]*/DEVELOPMENT_TEAM = 98G75Q6ZPJ/g' ios/Runner.xcodeproj/project.pbxproj
+          # Proje dosyalarının içine de her ihtimale karşı Team ID'yi yazıyoruz
+          sed -i '' "s/DEVELOPMENT_TEAM = [^;]*/DEVELOPMENT_TEAM = $APPLE_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
 
       - name: Set up code signing settings on Xcode project
         script: |
@@ -56,12 +58,16 @@ workflows:
 
       - name: Flutter build IPA
         script: |
-          # Projeye Team ID gömdüğümüz için artık --no-codesign arşivi başarıyla tamamlayacaktır
+          # İŞTE EN KRİTİK ADIM:
+          # Hem --no-codesign kullanıyoruz hem de Xcode build ayarlarına DEVELOPMENT_TEAM'i doğrudan enjekte ediyoruz.
+          # Bu sayede Flutter arşivleme yaparken takılmayacak, imzalama işini yine son saniyede Codemagic publishing yapacak.
           flutter build ipa --release \
             --export-method=app-store \
             --build-name=1.0.0 \
             --build-number=1 \
-            --no-codesign
+            --no-codesign \
+            --dart-define=DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
+            --build-inputs=DEVELOPMENT_TEAM=$APPLE_TEAM_ID
 
     artifacts:
       - build/ios/ipa/*.ipa
