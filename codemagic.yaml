@@ -7,9 +7,12 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m1
     
+    # Validation hatasını çözen kritik entegrasyon bağlantısı:
+    integrations:
+      app_store_connect: Apple_Developer # Hesap ayarlarında verdiğiniz isim (Genelde Apple_Developer veya entegrasyon adıdır)
+
     environment:
       groups:
-        # Entegrasyon sayfasındaki Apple Developer bağınızı buraya mühürlüyoruz
         - app_store_connect
       vars:
         XCODE_WORKSPACE: "ios/Runner.xcworkspace"
@@ -29,12 +32,10 @@ workflows:
     scripts:
       - name: Force iOS Deployment Target to 15.0
         script: |
-          # Firebase paketlerinin iOS 15+ zorunluluğunu çözmek için ana proje ayarlarını günceller
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
 
       - name: Set up code signing settings on Xcode project
         script: |
-          # Apple Developer hesabınızdaki sertifikaları sanal Mac'e indirip projeye bağlar
           xcode-project use-profiles
 
       - name: Get Flutter packages
@@ -48,7 +49,6 @@ workflows:
 
       - name: Flutter build IPA
         script: |
-          # Uygulamayı Apple sertifikalarıyla imzalanmış (codesign aktif) şekilde paketler
           flutter build ipa --release
 
     artifacts:
@@ -57,7 +57,6 @@ workflows:
 
     publishing:
       app_store_connect:
-        # Derleme bittiğinde uygulamayı doğrudan App Store Connect (TestFlight)'e uçurur
         auth: integration
       email:
         recipients:
