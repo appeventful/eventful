@@ -7,9 +7,8 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m1
     
-    # Validation hatasını çözen kritik entegrasyon bağlantısı:
     integrations:
-      app_store_connect: Apple_Developer # Hesap ayarlarında verdiğiniz isim (Genelde Apple_Developer veya entegrasyon adıdır)
+      app_store_connect: Apple_Developer
 
     environment:
       groups:
@@ -35,9 +34,8 @@ workflows:
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
 
       - name: Set up code signing settings on Xcode project
-          script: |
-            # --create parametresi, hesapta sertifika yoksa Codemagic'in Admin yetkisiyle otomatik üretmesini sağlar
-            xcode-project use-profiles --create
+        script: |
+          xcode-project use-profiles --create
 
       - name: Get Flutter packages
         script: |
