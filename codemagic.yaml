@@ -16,6 +16,7 @@ workflows:
       vars:
         XCODE_WORKSPACE: "ios/Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
+        APP_ID: "com.appeventful.eventful"
       flutter: stable
       xcode: latest
       cocoapods: default
@@ -35,6 +36,8 @@ workflows:
 
       - name: Set up code signing settings on Xcode project
         script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$APP_ID" --provisioning-profile-type=IOS_APP_STORE --create
           xcode-project use-profiles
 
       - name: Get Flutter packages
@@ -48,7 +51,8 @@ workflows:
 
       - name: Flutter build IPA
         script: |
-          flutter build ipa --release
+          # Export metodunu app-store olarak güncelledik:
+          flutter build ipa --release --export-method=app-store
 
     artifacts:
       - build/ios/ipa/*.ipa
