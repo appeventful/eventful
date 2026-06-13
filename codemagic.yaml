@@ -9,12 +9,11 @@ workflows:
     
     environment:
       groups:
-        # Codemagic panelinde tanımlayabileceğiniz App Store Connect ve sertifika değişkenleri grubu
-        - app_store_credentials 
+        # Entegrasyon sayfasındaki Apple Developer bağınızı buraya mühürlüyoruz
+        - app_store_connect
       vars:
         XCODE_WORKSPACE: "ios/Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
-        FLUTTER_VERSION: "stable" # veya projenizin kullandığı spesifik Flutter sürümü
       flutter: stable
       xcode: latest
       cocoapods: default
@@ -28,10 +27,16 @@ workflows:
         - pattern: 'dev'
 
     scripts:
-      - name: Set up local properties and configs
+      - name: Force iOS Deployment Target to 15.0
         script: |
-          echo "Preparing environment..."
-          
+          # Firebase paketlerinin iOS 15+ zorunluluğunu çözmek için ana proje ayarlarını günceller
+          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
+
+      - name: Set up code signing settings on Xcode project
+        script: |
+          # Apple Developer hesabınızdaki sertifikaları sanal Mac'e indirip projeye bağlar
+          xcode-project use-profiles
+
       - name: Get Flutter packages
         script: |
           flutter precache --ios
@@ -43,21 +48,19 @@ workflows:
 
       - name: Flutter build IPA
         script: |
-          # Eğer otomatik kod imzalama (code signing) kullanıyorsanız:
-          # keychain initialize
-          # app-store-connect fetch-signing-files "com.yourdomain.eventful" --project-id=YOUR_PROJECT_ID_FROM_APP_STORE_CONNECT --install-profiles
-          
-          # İmzasız bir IPA derlemek için (veya Codemagic panelinden imzalama yapacaksanız):
-          flutter build ipa --release --no-codesign
+          # Uygulamayı Apple sertifikalarıyla imzalanmış (codesign aktif) şekilde paketler
+          flutter build ipa --release
 
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
 
     publishing:
+      app_store_connect:
+        # Derleme bittiğinde uygulamayı doğrudan App Store Connect (TestFlight)'e uçurur
+        auth: integration
       email:
         recipients:
-          # Buraya bildirim gitmesini istediğiniz e-posta adreslerini ekleyebilirsiniz
           - eventful@eventfulapp.org
         notify:
           success: true
