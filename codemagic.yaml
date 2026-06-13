@@ -33,18 +33,17 @@ workflows:
     scripts:
       - name: Force iOS Deployment Target and Development Team
         script: |
-          # Firebase paketlerinin iOS 15+ zorunluluğunu çözer
+          # Firebase paketlerinin iOS 15+ zorunluluğunu kesin olarak çözer
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 13.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
           
-          # Proje dosyalarının içine Team ID'yi agresif bir şekilde kazır
+          # Proje dosyalarının içine Team ID'yi enjekte eder
           sed -i '' "s/DEVELOPMENT_TEAM = [^;]*/DEVELOPMENT_TEAM = $APPLE_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
 
       - name: Set up code signing settings on Xcode project
         script: |
           keychain initialize
           app-store-connect fetch-signing-files "$APP_ID" --create
-          # --config-only parametresi olmadan profilleri xcode'a tam uyumlu gömeriz
           xcode-project use-profiles
 
       - name: Get Flutter packages
@@ -56,18 +55,20 @@ workflows:
         script: |
           cd ios && pod install
 
-      - name: Flutter build IPA
+      - name: Build iOS Frameworks (No Codesign)
         script: |
-          # İŞTE KESİN ÇÖZÜM:
-          # Xcode imzalama motoruna (xcodebuild) doğrudan ortam değişkenleri üzerinden komut veriyoruz.
-          # Bu sayede alt SPM paketleri de dahil olmak üzere tüm yapılar bu takım kimliğini kullanmak zorunda kalacak.
-          export XC_DEVELOPMENT_TEAM="$APPLE_TEAM_ID"
-          
-          flutter build ipa --release \
-            --export-method=app-store \
-            --build-name=1.0.0 \
-            --build-number=1 \
-            --no-codesign
+          # Flutter'a sadece paketleri ve Swift entegrasyonlarını hazırlatıyoruz.
+          # Bu komut takım kontrolüne takılmaz, tıkır tıkır arşivi hazırlar.
+          flutter build ios --release --no-codesign
+
+      - name: Package and Sign IPA via Codemagic
+        script: |
+          # İşte büyü burada gerçekleşiyor:
+          # Flutter'ın hazırladığı ham çıktıyı alıp, Codemagic CLI vasıtasıyla doğrudan 
+          # sizin Team ID'niz ve indirdiğimiz profillerle mühürleyip resmi .ipa haline getiriyoruz.
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
 
     artifacts:
       - build/ios/ipa/*.ipa
