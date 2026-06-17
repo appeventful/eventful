@@ -1,71 +1,25 @@
-# Codemagic CI/CD Configuration for Eventful iOS Build
-# Daha fazla bilgi için: https://docs.codemagic.io/yaml-quick-start/quick-start-guide/
+scripts:
+  - name: Force iOS Deployment Target and Development Team
+    script: |
+      sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
+      sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 13.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
+      sed -i '' "s/DEVELOPMENT_TEAM = [^;]*/DEVELOPMENT_TEAM = $APPLE_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
 
-workflows:
-  ios-workflow:
-    name: Eventful iOS
+  - name: Fetch Flutter packages
+    script: |
+      flutter precache --ios
+      flutter pub get
 
-    max_build_duration: 60
-    instance_type: mac_mini_m1
+  - name: Install CocoaPods
+    script: |
+      cd ios
+      pod install
 
-    integrations:
-      app_store_connect: Apple_Developer
-
-    environment:
-      flutter: stable
-      xcode: latest
-      cocoapods: default
-
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.appeventful.eventful
-
-      vars:
-        APP_ID: "com.appeventful.eventful"
-        APPLE_TEAM_ID: "98G75Q6ZPJ"
-
-    triggering:
-      events:
-        - push
-
-      branch_patterns:
-        - pattern: main
-        - pattern: master
-
-    scripts:
-      - name: Force iOS Deployment Target and Development Team
-        script: |
-          # Firebase ve Google Maps paketlerinin minimum iOS 15+ gereksinimini garantiye alır
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 13.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
-          
-          # Proje dosyasına Team ID'nizi enjekte ederek Xcode imzalama eşleşmesini garanti eder
-          sed -i '' "s/DEVELOPMENT_TEAM = [^;]*/DEVELOPMENT_TEAM = $APPLE_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
-
-      - name: Fetch Flutter packages
-        script: |
-          flutter precache --ios
-          flutter pub get
-
-      - name: Install CocoaPods
-        script: |
-          cd ios
-          pod install
-
-      - name: Build and Sign IPA
-        script: |
-          # Profilleri tam bu saniyede işliyoruz ki Flutter veya Pods ayarları bozamadan doğrudan derlemeye girsin!
-          xcode-project use-profiles
-          
-          flutter build ipa \
-            --release \
-            --export-method app-store
-
-    artifacts:
-      - build/ios/ipa/*.ipa
-      - /tmp/xcodebuild_logs/*.log
-
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
+  - name: Build and Sign IPA
+    script: |
+      xcode-project use-profiles
+      
+      # --export-method yerine doğrudan Codemagic'in ürettiği resmi plist dosyasını bağlıyoruz
+      flutter build ipa \
+        --release \
+        --export-options-plist=/Users/builder/export_options.plist
