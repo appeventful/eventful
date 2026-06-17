@@ -1,89 +1,63 @@
-# Codemagic CI/CD Configuration for Eventful iOS Build
-# Daha fazla bilgi için: https://docs.codemagic.io/yaml-quick-start/quick-start-guide/
-
 workflows:
-  ios-workflow:
-    name: Eventful - Etkinlik Rehberi
-    max_build_duration: 60
-    instance_type: mac_mini_m1
-    
-    integrations:
-      app_store_connect: Apple_Developer
+ios-workflow:
+name: Eventful iOS Release
+  
+  ```
+max_build_duration: 60
+instance_type: mac_mini_m1
 
-    environment:
-      groups:
-        - app_store_connect
-      vars:
-        XCODE_WORKSPACE: "ios/Runner.xcworkspace"
-        XCODE_SCHEME: "Runner"
-        APP_ID: "com.appeventful.eventful"
-        APPLE_TEAM_ID: "98G75Q6ZPJ"
-      flutter: stable
-      xcode: latest
-      cocoapods: default
+integrations:
+  app_store_connect: Apple_Developer
 
-    triggering:
-      events:
-        - push
-      branch_patterns:
-        - pattern: 'main'
-        - pattern: 'master'
-        - pattern: 'dev'
+environment:
+  flutter: stable
+  xcode: latest
+  cocoapods: default
 
-    scripts:
-      - name: Force iOS Deployment Target and Development Team
-        script: |
-          # Firebase paketlerinin iOS 15+ zorunluluğunu çözer
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 13.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
-          
-          # Proje dosyalarının içine Team ID'nizi enjekte eder
-          sed -i '' "s/DEVELOPMENT_TEAM = [^;]*/DEVELOPMENT_TEAM = $APPLE_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
+  vars:
+    APP_ID: "com.appeventful.eventful"
+    APPLE_TEAM_ID: "98G75Q6ZPJ"
 
-      - name: Set up code signing settings on Xcode project
-        script: |
-          keychain initialize
-          app-store-connect fetch-signing-files "$APP_ID" --create
-          xcode-project use-profiles
+scripts:
+  - name: Flutter pub get
+    script: |
+      flutter pub get
 
-      - name: Get Flutter packages
-        script: |
-          flutter precache --ios
-          flutter pub get
+  - name: Install CocoaPods
+    script: |
+      cd ios
+      pod install
 
-      - name: Pod Install
-        script: |
-          cd ios && pod install
+  - name: Configure code signing
+    script: |
+      keychain initialize
 
-      - name: Flutter build IPA
-        script: |
-          flutter build ipa \
-            --release \
-            --export-method=app-store \
-            --build-name=1.0.1 \
-            --build-number=2
+      app-store-connect fetch-signing-files "$APP_ID" \
+        --type IOS_APP_STORE \
+        --create
 
-      - name: Verify IPA
-        script: |
-          echo "IPA files:"
-          find build -name "*.ipa"
+      xcode-project use-profiles
 
-          echo "Archive files:"
-          find build -name "*.xcarchive"
+  - name: Build IPA
+    script: |
+      flutter build ipa \
+        --release \
+        --export-method=app-store
 
-    artifacts:
-      - build/ios/ipa/*.ipa
-      - build/ios/archive/*.xcarchive
-      - /tmp/xcodebuild_logs/*.log
+artifacts:
+  - build/ios/ipa/*.ipa
+  - build/ios/archive/*.xcarchive
+  - /tmp/xcodebuild_logs/*.log
 
-    publishing:
-      app_store_connect:
-        auth: integration
-        # Hata veren alt grubu temizledik, TestFlight gönderimini en sade haliyle kilitledik:
-        submit_to_testflight: true
-      email:
-        recipients:
-          - eventful@eventfulapp.org
-        notify:
-          success: true
-          failure: true
+publishing:
+  app_store_connect:
+    auth: integration
+    submit_to_testflight: true
+
+  email:
+    recipients:
+      - eventful@eventfulapp.org
+    notify:
+      success: true
+      failure: true
+  ```
