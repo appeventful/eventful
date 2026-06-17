@@ -1,62 +1,43 @@
 workflows:
-ios-workflow:
-name: Eventful iOS Release
-  
-  ```
-max_build_duration: 60
-instance_type: mac_mini_m1
+  ios-workflow:
+    name: Eventful iOS
 
-integrations:
-  app_store_connect: Apple_Developer
+    max_build_duration: 60
 
-environment:
-  flutter: stable
-  xcode: latest
-  cocoapods: default
+    integrations:
+      app_store_connect: Apple_Developer
 
-  vars:
-    APP_ID: "com.appeventful.eventful"
-    APPLE_TEAM_ID: "98G75Q6ZPJ"
+    environment:
+      flutter: stable
+      xcode: latest
 
-scripts:
-  - name: Flutter pub get
-    script: |
-      flutter pub get
+      vars:
+        APP_ID: com.appeventful.eventful
 
-  - name: Install CocoaPods
-    script: |
-      cd ios
-      pod install
+    scripts:
+      - name: Flutter packages
+        script: |
+          flutter pub get
 
-  - name: Configure code signing
-    script: |
-      keychain initialize
+      - name: Set up code signing
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$APP_ID" --type IOS_APP_STORE --create
+          xcode-project use-profiles
 
-      app-store-connect fetch-signing-files "$APP_ID" \
-        --type IOS_APP_STORE \
-        --create
+      - name: Install CocoaPods
+        script: |
+          cd ios
+          pod install
 
-      xcode-project use-profiles
+      - name: Build IPA
+        script: |
+          flutter build ipa --release
 
-  - name: Build IPA
-    script: |
-      flutter build ipa \
-        --release \
-        --export-method=app-store
+    artifacts:
+      - build/ios/ipa/*.ipa
 
-artifacts:
-  - build/ios/ipa/*.ipa
-  - build/ios/archive/*.xcarchive
-  - /tmp/xcodebuild_logs/*.log
-
-publishing:
-  app_store_connect:
-    auth: integration
-    submit_to_testflight: true
-
-  email:
-    recipients:
-      - eventful@eventfulapp.org
-    notify:
-      success: true
-      failure: true
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
