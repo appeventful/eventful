@@ -39,8 +39,13 @@ workflows:
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 13.0;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
           
-          # Proje dosyasına Team ID'nizi otomatik enjekte ederek Xcode imzalama hatasını tamamen çözer
+          # Proje dosyasına Team ID'nizi enjekte ederek Xcode imzalama eşleşmesini garanti eder
           sed -i '' "s/DEVELOPMENT_TEAM = [^;]*/DEVELOPMENT_TEAM = $APPLE_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
+
+      - name: Set up code signing settings on Xcode project
+        script: |
+          # Arayüzden bağladığınız sertifikaları projenin kalbine işleyen kritik komut:
+          xcode-project use-profiles
 
       - name: Fetch Flutter packages
         script: |
