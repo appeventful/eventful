@@ -63,8 +63,17 @@ workflows:
             --build-name=1.0.1 \
             --build-number=2
 
+      - name: Verify IPA
+        script: |
+          echo "IPA files:"
+          find build -name "*.ipa"
+
+          echo "Archive files:"
+          find build -name "*.xcarchive"
+
     artifacts:
       - build/ios/ipa/*.ipa
+      - build/ios/archive/*.xcarchive
       - /tmp/xcodebuild_logs/*.log
 
     publishing:
