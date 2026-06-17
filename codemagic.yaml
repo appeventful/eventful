@@ -57,12 +57,11 @@ workflows:
 
       - name: Flutter build IPA
         script: |
-          # Bir önceki adımda başarıyla geçen imzasız IPA üretim komutumuz
-          flutter build ipa --release \
+          flutter build ipa \
+            --release \
             --export-method=app-store \
-            --build-name=1.0.0 \
-            --build-number=1 \
-            --no-codesign
+            --build-name=1.0.1 \
+            --build-number=2
 
     artifacts:
       - build/ios/ipa/*.ipa
