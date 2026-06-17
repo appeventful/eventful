@@ -42,11 +42,6 @@ workflows:
           # Proje dosyasına Team ID'nizi enjekte ederek Xcode imzalama eşleşmesini garanti eder
           sed -i '' "s/DEVELOPMENT_TEAM = [^;]*/DEVELOPMENT_TEAM = $APPLE_TEAM_ID/g" ios/Runner.xcodeproj/project.pbxproj
 
-      - name: Set up code signing settings on Xcode project
-        script: |
-          # Arayüzden bağladığınız sertifikaları projenin kalbine işleyen kritik komut:
-          xcode-project use-profiles
-
       - name: Fetch Flutter packages
         script: |
           flutter precache --ios
@@ -57,8 +52,11 @@ workflows:
           cd ios
           pod install
 
-      - name: Build IPA
+      - name: Build and Sign IPA
         script: |
+          # Profilleri tam bu saniyede işliyoruz ki Flutter veya Pods ayarları bozamadan doğrudan derlemeye girsin!
+          xcode-project use-profiles
+          
           flutter build ipa \
             --release \
             --export-method app-store
