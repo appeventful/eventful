@@ -11,6 +11,9 @@ class ErrorMessages {
     
     if (e is FirebaseAuthException) {
       errorCode = e.code;
+      if (e.message != null && e.message!.contains('39')) {
+        return 'Doğrulama Hatası (39): Firebase Console\'da SHA-1 sertifikanızın ekli olduğundan ve "Android Device Verification" API\'sinin etkin olduğundan emin olun.';
+      }
     } else if (e.toString().contains(']')) {
       // Firebase'den gelen ham hata formatını ayıkla: [firebase_auth/email-already-in-use] ...
       errorCode = e.toString().split(']').first.split('/').last;
@@ -44,6 +47,14 @@ class ErrorMessages {
         return 'Bu işlem şu an devre dışı bırakılmış.';
       case 'channel-error':
         return 'Lütfen tüm alanları eksiksiz doldurun.';
+      case 'invalid-phone-number':
+        return 'Geçersiz bir telefon numarası girdiniz.';
+      case 'quota-exceeded':
+        return 'SMS kotası doldu. Lütfen daha sonra tekrar deneyin.';
+      case 'captcha-check-failed':
+        return 'Güvenlik doğrulaması (reCAPTCHA) başarısız oldu.';
+      case 'internal-error':
+        return 'Sunucu tarafında bir hata oluştu. Lütfen yapılandırmayı kontrol edin.';
       default:
         return 'İşlem başarısız: $errorCode';
     }

@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
         verificationFailed: (FirebaseAuthException e) {
           setState(() {
             _isLoading = false;
-            _error = 'Doğrulama hatası: ${e.message}';
+            _error = ErrorMessages.parseAuthError(e);
           });
         },
         codeSent: (String verificationId, int? resendToken) {

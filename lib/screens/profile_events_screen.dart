@@ -53,32 +53,20 @@ class ProfileEventsScreen extends StatelessWidget {
 
           var docs = snapshot.data?.docs ?? [];
           
-          // Filtering: Non-archived and only past events
+          // Filtering: Non-archived
           docs = docs.where((doc) {
             var data = doc.data() as Map<String, dynamic>;
             
             // 1. Filter out archived
             if (data['isArchived'] == true) return false;
 
-            // 2. Filter out events that haven't happened yet (show only past)
-            final rawDate = data['eventDate'];
-            DateTime date;
-            if (rawDate is Timestamp) {
-              date = rawDate.toDate();
-            } else if (rawDate is String) {
-              date = DateTime.tryParse(rawDate) ?? DateTime.now();
-            } else {
-              date = DateTime.now();
-            }
-            if (date.isAfter(DateTime.now())) return false;
-
-            // 3. For 'joined' type, exclude events created by the user themselves
+            // 2. For 'joined' type, exclude events created by the user themselves
             if (type == 'joined' && data['creatorId'] == userId) return false;
 
             return true;
           }).toList();
 
-          // Sorting: Oldest to Newest (Tam tersi: b.compareTo(a) -> a.compareTo(b))
+          // Sorting: Newest to Oldest
           docs.sort((a, b) {
             var aData = a.data() as Map<String, dynamic>;
             var bData = b.data() as Map<String, dynamic>;
@@ -86,7 +74,7 @@ class ProfileEventsScreen extends StatelessWidget {
             final rawB = bData['eventDate'];
             DateTime aDate = rawA is Timestamp ? rawA.toDate() : (rawA is String ? DateTime.tryParse(rawA) ?? DateTime.fromMillisecondsSinceEpoch(0) : DateTime.fromMillisecondsSinceEpoch(0));
             DateTime bDate = rawB is Timestamp ? rawB.toDate() : (rawB is String ? DateTime.tryParse(rawB) ?? DateTime.fromMillisecondsSinceEpoch(0) : DateTime.fromMillisecondsSinceEpoch(0));
-            return aDate.compareTo(bDate);
+            return bDate.compareTo(aDate);
           });
 
           if (docs.isEmpty) {

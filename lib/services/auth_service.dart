@@ -16,7 +16,11 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId: kIsWeb || Platform.isIOS 
+      ? '327687814157-fp3229fguetbfjuert5ijg7ur6d9q4k8.apps.googleusercontent.com' 
+      : null,
+  );
 
   // Kayıt sırasında alınan geçici veriler
   static Map<String, String>? pendingData;

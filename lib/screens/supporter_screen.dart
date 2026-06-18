@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../utils/constants.dart';
 
 class SupporterScreen extends StatefulWidget {
@@ -41,11 +42,11 @@ class _SupporterScreenState extends State<SupporterScreen> {
       return;
     }
 
-    const Set<String> _kIds = <String>{
-      'bronz',
-      'gumus',
-      'altin',
-    };
+    final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    final Set<String> _kIds = isIOS 
+      ? <String>{'eventful_bronze_ios', 'eventful_silver_ios', 'eventful_gold_ios'}
+      : <String>{'bronz', 'gumus', 'altin'};
+
     final ProductDetailsResponse response = await _inAppPurchase.queryProductDetails(_kIds);
     
     if (mounted) {
@@ -82,13 +83,14 @@ class _SupporterScreenState extends State<SupporterScreen> {
     String tier = 'none';
     String badgeId = '';
     
-    if (purchase.productID == 'bronz') {
+    final pId = purchase.productID;
+    if (pId == 'bronz' || pId == 'eventful_bronze_ios') {
       tier = 'bronze';
       badgeId = 'supporter_bronze';
-    } else if (purchase.productID == 'gumus') {
+    } else if (pId == 'gumus' || pId == 'eventful_silver_ios') {
       tier = 'silver';
       badgeId = 'supporter_silver';
-    } else if (purchase.productID == 'altin') {
+    } else if (pId == 'altin' || pId == 'eventful_gold_ios') {
       tier = 'gold';
       badgeId = 'supporter_gold';
     }
@@ -117,6 +119,8 @@ class _SupporterScreenState extends State<SupporterScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final platform = Theme.of(context).platform;
+    final isIOS = platform == TargetPlatform.iOS;
 
     return Scaffold(
       appBar: AppBar(
@@ -147,7 +151,7 @@ class _SupporterScreenState extends State<SupporterScreen> {
                     price: '29.99₺ / ay',
                     description: 'Profilinizde Bronz rozet kazanır ve isminiz turuncu görünür.',
                     color: Colors.orange.shade700,
-                    productId: 'bronz',
+                    productId: isIOS ? 'eventful_bronze_ios' : 'bronz',
                   ),
                   const SizedBox(height: 16),
                   _buildTierCard(
@@ -155,7 +159,7 @@ class _SupporterScreenState extends State<SupporterScreen> {
                     price: '59.99₺ / ay',
                     description: 'Profilinizde Gümüş rozet kazanır ve isminiz gümüş renginde parlar.',
                     color: Colors.blueGrey.shade400,
-                    productId: 'gumus',
+                    productId: isIOS ? 'eventful_silver_ios' : 'gumus',
                   ),
                   const SizedBox(height: 16),
                   _buildTierCard(
@@ -163,7 +167,7 @@ class _SupporterScreenState extends State<SupporterScreen> {
                     price: '119.99₺ / ay',
                     description: 'Altın rozet kazanır, isminiz altın renginde parlar ve en üst düzey desteği sağlarsınız.',
                     color: Colors.amber.shade600,
-                    productId: 'altin',
+                    productId: isIOS ? 'eventful_gold_ios' : 'altin',
                   ),
                   const SizedBox(height: 40),
                   TextButton(
@@ -182,9 +186,49 @@ class _SupporterScreenState extends State<SupporterScreen> {
                     },
                     child: const Text('Satın Alımları Geri Yükle', style: TextStyle(fontSize: 12, color: Colors.blueGrey)),
                   ),
+                  const SizedBox(height: 24),
+                  const Divider(),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Abonelik Bilgilendirmesi',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    isIOS 
+                      ? 'Ödeme, satın alma onayının ardından Apple ID hesabınızdan tahsil edilecektir. Abonelik, mevcut dönemin bitiminden en az 24 saat önce iptal edilmediği sürece otomatik olarak yenilenir. Hesabınızdan mevcut dönemin bitiminden 24 saat önce yenileme ücreti alınacaktır. Aboneliklerinizi satın aldıktan sonra App Store hesap ayarlarınıza giderek yönetebilir ve iptal edebilirsiniz.'
+                      : 'Ödeme, satın alma onayının ardından Google Play hesabınızdan tahsil edilecektir. Abonelik, mevcut dönemin bitiminden en az 24 saat önce iptal edilmediği sürece otomatik olarak yenilenir. Hesabınızdan mevcut dönemin bitiminden 24 saat önce yenileme ücreti alınacaktır. Aboneliklerinizi satın aldıktan sonra Google Play Store abonelik ayarlarınıza giderek yönetebilir ve iptal edebilirsiniz.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 11, color: isDark ? Colors.white54 : Colors.black54),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildLegalLink('Kullanım Koşulları', 'https://eventfulapp.org/terms'),
+                      const Text('  •  ', style: TextStyle(color: Colors.grey)),
+                      _buildLegalLink('Gizlilik Politikası', 'https://eventfulapp.org/privacy'),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
+    );
+  }
+
+  Widget _buildLegalLink(String title, String url) {
+    return InkWell(
+      onTap: () async {
+        final Uri uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri);
+        }
+      },
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 12, color: Colors.blue, decoration: TextDecoration.underline),
+      ),
     );
   }
 
@@ -223,6 +267,8 @@ class _SupporterScreenState extends State<SupporterScreen> {
               onPressed: () {
                 if (product != null) {
                   final PurchaseParam purchaseParam = PurchaseParam(productDetails: product);
+                  // Otomatik yenilenen abonelikler için buyNonConsumable kullanılır
+                  // Apple tarafında "Auto-Renewable Subscription" olarak seçilmelidir
                   _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
                 } else {
                   _showStoreError();
@@ -242,11 +288,14 @@ class _SupporterScreenState extends State<SupporterScreen> {
   }
 
   void _showStoreError() {
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Mağaza Bağlantı Hatası'),
-        content: const Text('Google Play Store bağlantısı kurulamadı. Lütfen internet bağlantınızı ve Google hesabınızın açık olduğunu kontrol edin.'),
+        content: Text(isIOS 
+          ? 'App Store bağlantısı kurulamadı. Lütfen internet bağlantınızı ve Apple ID hesabınızın açık olduğunu kontrol edin.'
+          : 'Google Play Store bağlantısı kurulamadı. Lütfen internet bağlantınızı ve Google hesabınızın açık olduğunu kontrol edin.'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tamam')),
         ],
