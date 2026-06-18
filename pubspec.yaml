@@ -2,7 +2,7 @@ name: eventful_app
 description: Eventful - Etkinlik Rehberi
 
 publish_to: 'none'
-version: 2.5.2+28
+version: 2.5.2+29
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -47,6 +47,7 @@ dependencies:
   qr_flutter: ^4.1.0
   mobile_scanner: ^7.2.0
   google_sign_in: ^6.3.0
+  sign_in_with_apple: ^6.1.1
   in_app_purchase: ^3.2.0
 
 dev_dependencies:

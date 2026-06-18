@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/auth_service.dart';
 import '../utils/error_messages.dart';
@@ -17,17 +18,116 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthService _auth = AuthService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _codeController = TextEditingController();
   
   bool _isLoading = false;
   String? _error;
   bool _showForgotPassword = false;
   bool _showForgotEmail = false;
 
+  // Yeni Durumlar
+  bool _isPhoneLogin = false; // Varsayılan artık e-posta girişi
+  bool _isCodeSent = false;
+  String? _verificationId;
+
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _phoneController.dispose();
+    _codeController.dispose();
     super.dispose();
+  }
+
+  Future<void> _sendCode() async {
+    final phone = _phoneController.text.trim();
+    if (phone.isEmpty || phone.length < 10) {
+      setState(() => _error = 'Lütfen geçerli bir telefon numarası girin.');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      if (await _auth.isDeviceBanned()) {
+        setState(() {
+          _isLoading = false;
+          _error = 'Güvenlik Protokolü: Bu cihaz engellenmiştir.';
+        });
+        return;
+      }
+
+      // Başına +90 ekle (Eğer yoksa)
+      String formattedPhone = phone;
+      if (!phone.startsWith('+')) {
+        formattedPhone = '+90${phone.startsWith('0') ? phone.substring(1) : phone}';
+      }
+
+      await _auth.verifyPhoneNumber(
+        phoneNumber: formattedPhone,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // Otomatik doğrulama (Android için bazen)
+          await _auth.signInWithPhoneCredential(credential.verificationId!, credential.smsCode!);
+          if (mounted) Navigator.of(context).popUntil((route) => route.isFirst);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          setState(() {
+            _isLoading = false;
+            _error = 'Doğrulama hatası: ${e.message}';
+          });
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          setState(() {
+            _isLoading = false;
+            _isCodeSent = true;
+            _verificationId = verificationId;
+          });
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          _verificationId = verificationId;
+        },
+      );
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _error = 'Bir hata oluştu. Lütfen tekrar deneyin.';
+      });
+    }
+  }
+
+  Future<void> _verifyCode() async {
+    final code = _codeController.text.trim();
+    if (code.length < 6) {
+      setState(() => _error = 'Lütfen 6 haneli kodu girin.');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final credential = await _auth.signInWithPhoneCredential(_verificationId!, code);
+      if (credential != null && mounted) {
+        // Yeni kullanıcı mı kontrol et? AuthWrapper hallediyor ama pre-fill için:
+        if (credential.additionalUserInfo?.isNewUser ?? false) {
+           AuthService.pendingData = {
+             'phone': _phoneController.text.trim(),
+           };
+        }
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _error = 'Hatalı kod. Lütfen tekrar deneyin.';
+      });
+    }
   }
 
   Future<void> _login() async {
@@ -170,6 +270,29 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _loginWithApple() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final credential = await _auth.signInWithApple();
+      if (credential != null && mounted) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      } else {
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = 'Apple ile giriş yapılamadı. Lütfen tekrar deneyin.';
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -235,24 +358,154 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 48),
 
-                    // Email Field
-                    _buildTextField(
-                      controller: _emailController,
-                      label: 'E-posta',
-                      icon: Icons.email_outlined,
-                      keyboardType: TextInputType.emailAddress,
+                    // Social Login Buttons
+                    Row(
+                      children: [
+                        // Google Login Button
+                        Expanded(
+                          child: SizedBox(
+                            height: 56,
+                            child: OutlinedButton.icon(
+                              onPressed: _isLoading ? null : _loginWithGoogle,
+                              icon: const Icon(Icons.g_mobiledata, size: 32, color: Colors.blue),
+                              label: const Text(
+                                'Google',
+                                style: TextStyle(fontSize: 14, color: Colors.black87),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(color: Colors.grey.shade300),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                padding: EdgeInsets.zero,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (PlatformHelper.isIOS) ...[
+                          const SizedBox(width: 12),
+                          // Apple Login Button
+                          Expanded(
+                            child: SizedBox(
+                              height: 56,
+                              child: OutlinedButton.icon(
+                                onPressed: _isLoading ? null : _loginWithApple,
+                                icon: const Icon(Icons.apple, size: 24, color: Colors.black),
+                                label: const Text(
+                                  'Apple',
+                                  style: TextStyle(fontSize: 14, color: Colors.black87),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  side: BorderSide(color: Colors.grey.shade300),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                  padding: EdgeInsets.zero,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
-                    const SizedBox(height: 16),
 
-                    // Password Field
-                    _buildTextField(
-                      controller: _passwordController,
-                      label: 'Şifre',
-                      icon: Icons.lock_outline,
-                      obscureText: true,
+                    const SizedBox(height: 24),
+                    const Row(
+                      children: [
+                        Expanded(child: Divider()),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Text('veya', style: TextStyle(color: Colors.grey)),
+                        ),
+                        Expanded(child: Divider()),
+                      ],
                     ),
-                    
-                    // Error and Recovery options
+                    const SizedBox(height: 24),
+
+                    if (_isPhoneLogin) ...[
+                      // Telefon Girişi UI
+                      if (!_isCodeSent)
+                        _buildTextField(
+                          controller: _phoneController,
+                          label: 'Telefon Numarası',
+                          icon: Icons.phone_android,
+                          keyboardType: TextInputType.phone,
+                          hint: '5xx xxx xx xx',
+                        )
+                      else
+                        _buildTextField(
+                          controller: _codeController,
+                          label: 'Doğrulama Kodu',
+                          icon: Icons.lock_clock_outlined,
+                          keyboardType: TextInputType.number,
+                          hint: '6 haneli kod',
+                        ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        height: 56,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : (_isCodeSent ? _verifyCode : _sendCode),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          ),
+                          child: _isLoading
+                              ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 3)
+                              : Text(_isCodeSent ? 'Doğrula ve Giriş Yap' : 'Kod Gönder', 
+                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                      if (_isCodeSent)
+                        TextButton(
+                          onPressed: () => setState(() => _isCodeSent = false),
+                          child: const Text('Numarayı Değiştir', style: TextStyle(color: Colors.grey)),
+                        ),
+                    ] else ...[
+                      // E-posta Girişi UI
+                      _buildTextField(
+                        controller: _emailController,
+                        label: 'E-posta',
+                        icon: Icons.email_outlined,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      const SizedBox(height: 16),
+                      _buildTextField(
+                        controller: _passwordController,
+                        label: 'Şifre',
+                        icon: Icons.lock_outline,
+                        obscureText: true,
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: _showForgotPassword ? _resetPassword : () {
+                            setState(() {
+                              _error = null;
+                              _showForgotPassword = true;
+                            });
+                          },
+                          child: Text(
+                            'Şifremi Unuttum',
+                            style: TextStyle(color: Colors.orange.shade800, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        height: 56,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _login,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          ),
+                          child: _isLoading
+                              ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 3)
+                              : const Text('Giriş Yap', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ],
+
                     if (_error != null) ...[
                       const SizedBox(height: 12),
                       Text(
@@ -261,57 +514,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ],
-                    
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: _showForgotPassword ? _resetPassword : () {
-                          setState(() {
-                            _error = null;
-                            _showForgotPassword = true;
-                          });
-                        },
-                        child: Text(
-                          'Şifremi Unuttum',
-                          style: TextStyle(color: Colors.orange.shade800, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ),
 
                     const SizedBox(height: 24),
 
-                    // Login Button
-                    SizedBox(
-                      height: 56,
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _login,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                        ),
-                        child: _isLoading
-                            ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 3)
-                            : const Text('Giriş Yap', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Google Login Button
-                    SizedBox(
-                      height: 56,
-                      child: OutlinedButton.icon(
-                        onPressed: _isLoading ? null : _loginWithGoogle,
-                        icon: const Icon(Icons.g_mobiledata, size: 32, color: Colors.blue),
-                        label: const Text(
-                          'Google ile Devam Et',
-                          style: TextStyle(fontSize: 16, color: Colors.black87),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.grey.shade300),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    // Toggle Button
+                    Center(
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _isPhoneLogin = !_isPhoneLogin;
+                            _error = null;
+                            _isCodeSent = false;
+                          });
+                        },
+                        child: Text(
+                          _isPhoneLogin ? 'Mail Adresi ile Giriş Yap' : 'Telefon ile Giriş Yap',
+                          style: TextStyle(color: Colors.blue.shade700, fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -361,6 +579,7 @@ class _LoginScreenState extends State<LoginScreen> {
     required IconData icon,
     bool obscureText = false,
     TextInputType? keyboardType,
+    String? hint,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -375,6 +594,7 @@ class _LoginScreenState extends State<LoginScreen> {
         style: const TextStyle(color: Colors.black87),
         decoration: InputDecoration(
           labelText: label,
+          hintText: hint,
           prefixIcon: Icon(icon, color: Colors.orange.shade400),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),

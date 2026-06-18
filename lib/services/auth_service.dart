@@ -5,6 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 import '../services/notification_service.dart';
 import '../models/user_model.dart';
@@ -66,7 +69,11 @@ class AuthService {
       String uid = credential.user!.uid;
 
       // Send verification email
-      await credential.user?.sendEmailVerification();
+      try {
+        await credential.user?.sendEmailVerification();
+      } catch (e) {
+        debugPrint("Email verification error (ignored): $e");
+      }
 
       // 2. Handle Profile Image if any
       String? imageUrl;
@@ -91,9 +98,6 @@ class AuthService {
 
       userData['isFounder'] = isFounder;
       userData['badges'] = initialBadges;
-      if (isFounder && !initialBadges.contains('founder')) {
-        initialBadges.add('founder');
-      }
       userData['createdAt'] = FieldValue.serverTimestamp();
       userData['phone'] = _normalizePhone(userModel.phone ?? '');
       userData['friends'] = [];
@@ -104,7 +108,11 @@ class AuthService {
       await _firestore.collection('users').doc(uid).set(userData);
       
       // Initialize notifications
-      await NotificationService.initialize();
+      try {
+        await NotificationService.initialize();
+      } catch (e) {
+        debugPrint("Notification init error (ignored): $e");
+      }
     } catch (e) {
       debugPrint("Error in registerFullUser: $e");
       rethrow;
@@ -134,7 +142,7 @@ class AuthService {
     }
   }
 
-  // --- Phone Authentication (Deprecated) ---
+  // --- Phone Authentication ---
 
   Future<void> verifyPhoneNumber({
     required String phoneNumber,
@@ -184,6 +192,42 @@ class AuthService {
       debugPrint("Google Sign-In Error: $e");
       rethrow;
     }
+  }
+
+  Future<UserCredential?> signInWithApple() async {
+    try {
+      final rawNonce = _generateNonce();
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: _sha256Nonce(rawNonce),
+      );
+
+      final OAuthProvider oAuthProvider = OAuthProvider('apple.com');
+      final credential = oAuthProvider.credential(
+        idToken: appleCredential.identityToken,
+        rawNonce: rawNonce,
+      );
+
+      return await _auth.signInWithCredential(credential);
+    } catch (e) {
+      debugPrint("Apple Sign-In Error: $e");
+      rethrow;
+    }
+  }
+
+  String _generateNonce([int length = 32]) {
+    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = DateTime.now().millisecondsSinceEpoch;
+    return List.generate(length, (index) => charset[random % charset.length]).join();
+  }
+
+  String _sha256Nonce(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 
   // --- Profile Management ---

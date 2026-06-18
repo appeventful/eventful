@@ -20,6 +20,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _phoneController;
+  final _emailController = TextEditingController();
   final _usernameController = TextEditingController();
   DateTime? _selectedDate;
   String? _selectedGender;
@@ -38,24 +39,29 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
   bool _isNameReadOnly = true;
   bool _isPhoneReadOnly = true;
+  bool _isEmailReadOnly = true;
 
   @override
   void initState() {
     super.initState();
+    final user = FirebaseAuth.instance.currentUser;
     // Kayıt ekranından gelen verileri al
     final pending = AuthService.pendingData;
-    _nameController = TextEditingController(text: pending?['name']);
-    _phoneController = TextEditingController(text: pending?['phone']);
+    _nameController = TextEditingController(text: pending?['name'] ?? user?.displayName);
+    _phoneController = TextEditingController(text: pending?['phone'] ?? user?.phoneNumber);
+    _emailController.text = user?.email ?? '';
     
-    // Eğer pending data yoksa (hayalet kullanıcı), alanları doldurulabilir yap
-    if (pending == null || pending['name'] == null) _isNameReadOnly = false;
-    if (pending == null || pending['phone'] == null) _isPhoneReadOnly = false;
+    // Eğer veriler yoksa alanları doldurulabilir yap
+    if (_nameController.text.isEmpty) _isNameReadOnly = false;
+    if (_phoneController.text.isEmpty) _isPhoneReadOnly = false;
+    if (_emailController.text.isEmpty) _isEmailReadOnly = false;
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
+    _emailController.dispose();
     _usernameController.dispose();
     super.dispose();
   }
@@ -94,7 +100,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       if (user == null) return;
 
       // Admin kontrolü
-      String userEmail = user.email ?? '';
+      String userEmail = _emailController.text.trim();
       String userRole = 'user';
       
       if (userEmail == adminEmail) {
@@ -187,6 +193,18 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   if (v.replaceAll(RegExp(r'[^0-9]'), '').length < 10) return 'Geçerli bir numara girin';
                   return null;
                 },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _emailController,
+                readOnly: _isEmailReadOnly,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  labelText: 'E-posta Adresi',
+                  border: const OutlineInputBorder(),
+                  helperText: _isEmailReadOnly ? 'E-posta adresi doğrulanmıştır.' : 'Lütfen geçerli bir e-posta girin.',
+                ),
+                validator: (v) => (v == null || !v.contains('@')) ? 'Geçerli bir e-posta gerekli' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
