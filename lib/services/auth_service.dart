@@ -335,32 +335,49 @@ class AuthService {
     final uid = currentUser?.uid;
     if (uid == null) return;
 
+    // 1. Kendi dokümanını güncelle (Gönderilen istekler)
     await _firestore.collection('users').doc(uid).update({
       'sentFriendRequests': FieldValue.arrayUnion([targetUid])
     });
 
-    await _firestore.collection('notifications').add({
+    // 2. Karşı tarafa bildirim gönder (Notifications koleksiyonuna)
+    // Firestore kurallarında /notifications match'i var, ancak /users/{userId}/notifications değil.
+    // Bildirim merkezi genellikle kullanıcı alt koleksiyonundadır.
+    await _firestore.collection('users').doc(targetUid).collection('notifications').add({
       'type': 'friend_request',
       'senderId': uid,
       'receiverId': targetUid,
       'status': 'pending',
+      'title': 'Yeni Arkadaşlık İsteği',
+      'content': 'Sizinle arkadaş olmak istiyor.',
       'timestamp': FieldValue.serverTimestamp(),
+      'isRead': false,
     });
+
+    // 3. Push bildirim tetikle (Eğer varsa)
+    await NotificationService.sendNotification(
+      recipientId: targetUid,
+      title: 'Yeni Arkadaşlık İsteği',
+      body: 'Sizinle arkadaş olmak isteyen biri var!',
+      data: {'type': 'friend_request', 'senderId': uid},
+    );
   }
 
   Future<void> cancelFriendRequest(String targetUid) async {
     final uid = currentUser?.uid;
     if (uid == null) return;
 
+    // 1. Kendi listenden çıkar
     await _firestore.collection('users').doc(uid).update({
       'sentFriendRequests': FieldValue.arrayRemove([targetUid])
     });
 
-    final snapshot = await _firestore.collection('notifications')
+    // 2. Karşı tarafın bildirimlerinden sil
+    final snapshot = await _firestore.collection('users')
+        .doc(targetUid)
+        .collection('notifications')
         .where('senderId', isEqualTo: uid)
-        .where('receiverId', isEqualTo: targetUid)
         .where('type', isEqualTo: 'friend_request')
-        .where('status', isEqualTo: 'pending')
         .get();
 
     for (var doc in snapshot.docs) {
@@ -374,10 +391,13 @@ class AuthService {
 
     WriteBatch batch = _firestore.batch();
 
-    batch.update(_firestore.collection('notifications').doc(notificationId), {
-      'status': 'accepted'
+    // 1. Bildirimi güncelle (Kendi alt koleksiyonundaki)
+    batch.update(_firestore.collection('users').doc(uid).collection('notifications').doc(notificationId), {
+      'status': 'accepted',
+      'isRead': true,
     });
 
+    // 2. Arkadaş listelerini güncelle
     batch.update(_firestore.collection('users').doc(uid), {
       'friends': FieldValue.arrayUnion([senderId])
     });
@@ -387,6 +407,14 @@ class AuthService {
     });
 
     await batch.commit();
+
+    // 3. Karşı tarafa "Kabul edildi" bildirimi gönder
+    await NotificationService.sendNotification(
+      recipientId: senderId,
+      title: 'Arkadaşlık İsteği Kabul Edildi',
+      body: 'Artık arkadaşsınız!',
+      data: {'type': 'friend_accepted', 'senderId': uid},
+    );
   }
 
   Future<void> rejectFriendRequest(String notificationId) async {

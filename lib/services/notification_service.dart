@@ -25,12 +25,30 @@ class NotificationService {
 
     // 2. Local Notification Settings & Channel
     const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const InitializationSettings initSettings = InitializationSettings(android: androidSettings);
+    const DarwinInitializationSettings iosSettings = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+    const InitializationSettings initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
     
     // Android 13+ için Local Notifications izni iste
     await _localNotifications
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
+
+    // iOS için APNs Token alımını zorla
+    if (Platform.isIOS) {
+      String? apnsToken = await _messaging.getAPNSToken();
+      if (apnsToken != null) {
+        debugPrint('APNs Token: $apnsToken');
+      } else {
+        debugPrint('APNs Token henüz hazır değil, bekleniyor...');
+      }
+    }
 
     await _localNotifications.initialize(
       settings: initSettings,
