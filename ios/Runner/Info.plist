@@ -42,6 +42,8 @@
 	<string>Size en yakın etkinlikleri göstermek ve otomatik şehir seçimi yapmak için konum iznine ihtiyacımız var.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Size en yakın etkinlikleri göstermek ve otomatik şehir seçimi yapmak için konum iznine ihtiyacımız var.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Size en yakın etkinlikleri göstermek ve otomatik şehir seçimi yapmak için konum iznine ihtiyacımız var.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Etkinlik QR kodlarını okutmak ve etkinlik fotoğrafı paylaşmak için kamera izni gereklidir.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -101,6 +103,11 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
