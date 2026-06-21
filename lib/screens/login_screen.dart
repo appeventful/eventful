@@ -277,17 +277,33 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
+      debugPrint('Starting Apple Sign-In...');
       final credential = await _auth.signInWithApple();
+      debugPrint('Apple Sign-In Credential: $credential');
       if (credential != null && mounted) {
         Navigator.of(context).popUntil((route) => route.isFirst);
       } else {
+        debugPrint('Apple Sign-In cancelled or returned null');
         setState(() => _isLoading = false);
       }
     } catch (e) {
+      debugPrint('Apple Sign-In Error (catch): $e');
       if (mounted) {
+        String errorText = e.toString();
+        if (errorText.contains('AuthorizationErrorCode.canceled')) {
+          errorText = 'Giriş işlemi iptal edildi.';
+        } else if (errorText.contains('AuthorizationErrorCode.failed')) {
+          errorText = 'Apple ile giriş başarısız oldu. Lütfen internet bağlantınızı ve Apple ID ayarlarınızı kontrol edin.';
+        } else if (errorText.contains('AuthorizationErrorCode.unknown')) {
+          errorText = 'Bilinmeyen bir Apple hatası oluştu. Cihazınızı yeniden başlatmayı deneyebilirsiniz.';
+        }
+        
         setState(() {
-          _error = 'Apple ile giriş yapılamadı. Lütfen tekrar deneyin.';
+          _error = errorText;
           _isLoading = false;
+        });
+      }
+    }
         });
       }
     }
