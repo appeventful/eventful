@@ -63,34 +63,56 @@ class CommentService {
         );
       }
 
-      await _processMentions(eventId, text, userName, user.uid);
+      await processMentions(eventId: eventId, text: text, senderName: userName, senderUid: user.uid);
       
       // Auto badge check for 'chatter'
       await ScoreService.instance.checkAndAwardBadges(user.uid);
     }
   }
 
-  Future<void> _processMentions(String eventId, String text, String senderName, String senderUid) async {
-    final eventDoc = await _db.collection('events').doc(eventId).get();
-    if (!eventDoc.exists) return;
-
+  Future<void> processMentions({
+    required String eventId,
+    required String text,
+    required String senderName,
+    required String senderUid,
+    bool isCommunity = false,
+    String? communityName,
+  }) async {
+    if (isCommunity && communityName == null) return;
+    
+    // 1. Herkese bildirim
     if (text.contains('@herkes')) {
-      final String creatorId = eventDoc.data()?['creatorId'] ?? '';
-      final userDoc = await _db.collection('users').doc(senderUid).get();
-      final String role = userDoc.data()?['role'] ?? 'user';
+      bool isAuthorized = false;
       
-      final bool isAuthorized = senderUid == creatorId || role == 'admin' || role == 'mod';
+      if (!isCommunity) {
+        final eventDoc = await _db.collection('events').doc(eventId).get();
+        if (!eventDoc.exists) return;
+        final String creatorId = eventDoc.data()?['creatorId'] ?? '';
+        final userDoc = await _db.collection('users').doc(senderUid).get();
+        final String role = userDoc.data()?['role'] ?? 'user';
+        isAuthorized = senderUid == creatorId || role == 'admin' || role == 'mod';
+      } else {
+        final commDoc = await _db.collection('communities').doc(eventId).get(); // eventId acts as communityId here
+        if (!commDoc.exists) return;
+        final List moderators = commDoc.data()?['moderators'] ?? [];
+        final String creatorId = commDoc.data()?['creatorId'] ?? '';
+        isAuthorized = senderUid == creatorId || moderators.contains(senderUid);
+      }
 
       if (isAuthorized) {
-        final List participants = eventDoc.data()?['participants'] ?? [];
+        final doc = !isCommunity 
+            ? await _db.collection('events').doc(eventId).get()
+            : await _db.collection('communities').doc(eventId).get();
+        final List participants = doc.data()?['participants'] ?? [];
+            
         for (final String uid in participants) {
           if (uid != senderUid) {
             await NotificationService.sendNotification(
               recipientId: uid,
-              title: 'Etkinlik Sohbeti',
+              title: isCommunity ? communityName! : 'Etkinlik Sohbeti',
               body: '$senderName @herkesi etiketledi: $text',
               data: {
-                'type': 'chat_mention_all',
+                'type': isCommunity ? 'community_mention_all' : 'chat_mention_all',
                 'eventId': eventId,
               },
             );
@@ -100,6 +122,7 @@ class CommentService {
       return;
     }
 
+    // 2. Özel etiketlemeler
     final RegExp mentionRegex = RegExp(r'@(\w+)');
     final Iterable<RegExpMatch> matches = mentionRegex.allMatches(text);
     for (final match in matches) {
@@ -114,9 +137,9 @@ class CommentService {
           await NotificationService.sendNotification(
             recipientId: doc.id,
             title: 'Senden Bahsedildi',
-            body: '$senderName seni etiketledi: $text',
+            body: '$senderName seni ${isCommunity ? communityName! : 'sohbette'} etiketledi.',
             data: {
-              'type': 'chat_mention',
+              'type': isCommunity ? 'community_mention' : 'chat_mention',
               'eventId': eventId,
             },
           );

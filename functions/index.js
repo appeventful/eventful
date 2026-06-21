@@ -189,19 +189,187 @@ exports.archivePastEvents = onSchedule("every 1 hours", async (event) => {
   }
 });
 
+exports.onEventCreated = onDocumentCreated("events/{eventId}", async (event) => {
+  const snapshot = event.data;
+  if (!snapshot) return null;
+
+  const eventData = snapshot.data();
+  const creatorId = eventData.creatorId;
+  const eventTitle = eventData.title || "Yeni Etkinlik";
+
+  if (!creatorId) return null;
+
+  const db = admin.firestore();
+
+  try {
+    // 1. Get creator info
+    const creatorDoc = await db.collection("users").doc(creatorId).get();
+    const creatorName = creatorDoc.data()?.username || creatorDoc.data()?.name || "Takip ettiğin biri";
+
+    // 2. Get followers
+    const userDoc = await db.collection("users").doc(creatorId).get();
+    const followers = userDoc.data()?.followers || [];
+
+    if (followers.length === 0) return null;
+
+    // 3. Create entries for each follower
+    const batch = db.batch();
+    followers.forEach((followerId) => {
+      // In-app notification
+      const inAppNotifRef = db.collection("users").doc(followerId).collection("notifications").doc();
+      batch.set(inAppNotifRef, {
+        type: "new_event_from_following",
+        senderId: creatorId,
+        senderName: creatorName,
+        content: `yeni bir etkinlik oluşturdu: ${eventTitle}`,
+        relatedId: event.params.eventId,
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        isRead: false,
+      });
+
+      // Push notification
+      const pushNotifRef = db.collection("push_notifications").doc();
+      batch.set(pushNotifRef, {
+        recipientId: followerId,
+        notification: {
+          title: "Yeni Etkinlik! 🆕",
+          body: `${creatorName} yeni bir etkinlik oluşturdu: ${eventTitle}`,
+        },
+        data: {
+          type: "new_event_from_following",
+          eventId: event.params.eventId,
+          creatorId: creatorId,
+        },
+        status: "pending",
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        fcmVersion: "v1",
+      });
+    });
+
+    await batch.commit();
+    console.log(`${followers.length} takipçiye hem uygulama içi hem push bildirim kuyruğa alındı.`);
+  } catch (error) {
+    console.error("onEventCreated hatası:", error);
+  }
+});
+
+exports.checkUpcomingEvents = onSchedule("every 15 minutes", async (event) => {
+  const now = admin.firestore.Timestamp.now();
+  const thirtyMinsLater = admin.firestore.Timestamp.fromMillis(now.toMillis() + 30 * 60 * 1000);
+  const fortyFiveMinsLater = admin.firestore.Timestamp.fromMillis(now.toMillis() + 45 * 60 * 1000);
+
+  const db = admin.firestore();
+
+  try {
+    const upcomingEvents = await db.collection("events")
+      .where("eventDate", ">", thirtyMinsLater)
+      .where("eventDate", "<", fortyFiveMinsLater)
+      .where("isApproved", "==", true)
+      .where("isArchived", "==", false)
+      .get();
+
+    if (upcomingEvents.empty) return null;
+
+    const batch = db.batch();
+    upcomingEvents.forEach((doc) => {
+      const eventData = doc.data();
+      const participants = eventData.participants || [];
+      const eventTitle = eventData.title;
+
+      participants.forEach((uid) => {
+        // In-app notification
+        const inAppNotifRef = db.collection("users").doc(uid).collection("notifications").doc();
+        batch.set(inAppNotifRef, {
+          type: "event_reminder",
+          title: "Etkinlik Yaklaşıyor! ⏰",
+          content: `"${eventTitle}" etkinliği yaklaşıyor. Hazır mısın?`,
+          eventId: doc.id,
+          timestamp: admin.firestore.FieldValue.serverTimestamp(),
+          isRead: false,
+        });
+
+        // Push notification
+        const pushNotifRef = db.collection("push_notifications").doc();
+        batch.set(pushNotifRef, {
+          recipientId: uid,
+          notification: {
+            title: "Etkinlik Yaklaşıyor! ⏰",
+            body: `"${eventTitle}" etkinliği yaklaşıyor. Hazır mısın?`,
+          },
+          data: {
+            type: "event_reminder",
+            eventId: doc.id,
+          },
+          status: "pending",
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          fcmVersion: "v1",
+        });
+      });
+    });
+
+    await batch.commit();
+    console.log("Yaklaşan etkinlik bildirimleri gönderildi.");
+  } catch (error) {
+    console.error("checkUpcomingEvents hatası:", error);
+  }
+});
+
+exports.dailyCityReminder = onSchedule("every day 10:00", async (event) => {
+  const db = admin.firestore();
+
+  try {
+    // Tüm kullanıcılara veya aktif kullanıcılara genel bir "Göz at" bildirimi
+    // Alternatif: /topics/all_users kullanmak daha verimli
+    const notifRef = db.collection("push_notifications").doc();
+    await notifRef.set({
+      to: "/topics/all_users",
+      notification: {
+        title: "Bugün Neler Var? 🔍",
+        body: "Şehrindeki yeni etkinlikleri kaçırma, hemen göz at!",
+      },
+      data: {
+        type: "daily_reminder",
+      },
+      status: "pending",
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      fcmVersion: "v1",
+    });
+    console.log("Günlük hatırlatma kuyruğa alındı.");
+  } catch (error) {
+    console.error("dailyCityReminder hatası:", error);
+  }
+});
+
 exports.sendPushNotification = onDocumentCreated("push_notifications/{docId}", async (event) => {
   const snapshot = event.data;
   if (!snapshot) return null;
 
   const data = snapshot.data();
-  if (!data || !data.to) return null;
+  if (!data) return null;
+
+  let targetToken = data.to;
+
+  // If no 'to' but 'recipientId', fetch user's FCM token
+  if (!targetToken && data.recipientId) {
+    try {
+      const userDoc = await admin.firestore().collection("users").doc(data.recipientId).get();
+      targetToken = userDoc.data()?.fcmToken;
+    } catch (e) {
+      console.error("Token fetch error:", e);
+    }
+  }
+
+  if (!targetToken) {
+    console.log("Hedef token bulunamadı, bildirim iptal edildi:", event.params.docId);
+    return snapshot.ref.update({ status: 'error', error: 'No token found' });
+  }
 
   const message = {
     notification: {
       title: data.notification.title || 'Eventful',
       body: data.notification.body || ''
     },
-    data: data.data || {},
+    data: (data.data || {}).map ? data.data : (data.data || {}), // Ensure it's a map
     android: {
       priority: 'high',
       notification: {
@@ -210,11 +378,18 @@ exports.sendPushNotification = onDocumentCreated("push_notifications/{docId}", a
     }
   };
 
+  // Ensure all data values are strings (FCM V1 requirement)
+  if (message.data) {
+    Object.keys(message.data).forEach(key => {
+      message.data[key] = String(message.data[key]);
+    });
+  }
+
   // Support for both tokens and topics
-  if (data.to.startsWith('/topics/')) {
-    message.topic = data.to.replace('/topics/', '');
+  if (targetToken.startsWith('/topics/')) {
+    message.topic = targetToken.replace('/topics/', '');
   } else {
-    message.token = data.to;
+    message.token = targetToken;
   }
 
   try {

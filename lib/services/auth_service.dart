@@ -344,26 +344,16 @@ class AuthService {
       'sentFriendRequests': FieldValue.arrayUnion([targetUid])
     });
 
-    // 2. Karşı tarafa bildirim gönder (Notifications koleksiyonuna)
-    // Firestore kurallarında /notifications match'i var, ancak /users/{userId}/notifications değil.
-    // Bildirim merkezi genellikle kullanıcı alt koleksiyonundadır.
-    await _firestore.collection('users').doc(targetUid).collection('notifications').add({
-      'type': 'friend_request',
-      'senderId': uid,
-      'receiverId': targetUid,
-      'status': 'pending',
-      'title': 'Yeni Arkadaşlık İsteği',
-      'content': 'Sizinle arkadaş olmak istiyor.',
-      'timestamp': FieldValue.serverTimestamp(),
-      'isRead': false,
-    });
-
-    // 3. Push bildirim tetikle (Eğer varsa)
+    // 2. Push ve Uygulama içi bildirim gönder
     await NotificationService.sendNotification(
       recipientId: targetUid,
       title: 'Yeni Arkadaşlık İsteği',
       body: 'Sizinle arkadaş olmak isteyen biri var!',
-      data: {'type': 'friend_request', 'senderId': uid},
+      data: {
+        'type': 'friend_request', 
+        'senderId': uid,
+        'status': 'pending',
+      },
     );
   }
 

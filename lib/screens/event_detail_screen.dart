@@ -25,6 +25,7 @@ import '../utils/sharing_templates.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../utils/constants.dart';
+import '../services/notification_service.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'qr_scanner_screen.dart';
 import 'dart:math';
@@ -1444,6 +1445,24 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       'pendingParticipants': FieldValue.arrayRemove([userId]),
       'participants': FieldValue.arrayUnion([userId])
     });
+
+    // Bildirim Gönder
+    try {
+      final eventDoc = await db.collection('events').doc(widget.eventId).get();
+      final eventTitle = eventDoc.data()?['title'] ?? 'Etkinlik';
+      
+      await NotificationService.sendNotification(
+        recipientId: userId,
+        title: 'Katılım İsteğin Onaylandı! 🎉',
+        body: '"$eventTitle" etkinliğine katılım isteğin onaylandı. Hemen sohbete katıl!',
+        data: {
+          'type': 'event_approval',
+          'eventId': widget.eventId,
+        },
+      );
+    } catch (e) {
+      debugPrint("Approval notification error: $e");
+    }
   }
 
   void _rejectUser(String userId) async {
@@ -1648,21 +1667,32 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       'fulfilledBy': currentUser?.uid,
     });
 
-    DocumentReference notifyRef = db.collection('users').doc(request['userId']).collection('notifications').doc();
-    batch.set(notifyRef, {
-      'type': 'reference_code_received',
-      'recipientId': request['userId'],
-      'senderId': currentUser?.uid,
-      'senderName': currentUser?.displayName ?? 'Bir kullanıcı',
-      'content': '${request['eventTitle']} etkinliği için referans kodunuz: $code',
-      'code': code,
-      'eventId': widget.eventId,
-      'isRead': false,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-
     await batch.commit();
+
+    // Bildirim Gönder (Push ve Uygulama İçi)
+    try {
+      final myDoc = await db.collection('users').doc(currentUser?.uid).get();
+      final myName = myDoc.data()?['username'] ?? myDoc.data()?['name'] ?? 'Biri';
+
+      await NotificationService.sendNotification(
+        recipientId: request['userId'],
+        title: 'Referansın Var! 🤝',
+        body: '${request['eventTitle']} etkinliği için referans kodunuz: $code',
+        data: {
+          'type': 'reference_code_received',
+          'eventId': widget.eventId,
+          'senderId': currentUser?.uid,
+          'senderName': myName,
+          'code': code,
+        },
+      );
+    } catch (e) {
+      debugPrint("Reference notification error: $e");
+    }
+
     if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Referans başarıyla verildi ve kullanıcıya bildirildi.')));
+
       showDialog(
         context: context,
         builder: (context) => AlertDialog(

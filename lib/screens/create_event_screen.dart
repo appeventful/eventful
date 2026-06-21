@@ -698,32 +698,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         'externalSource': widget.prefillData?['externalSource'] ?? false,
       });
 
-      // 5. Send Notifications to Followers
-      if (userData != null) {
-        List followers = userData['followers'] ?? [];
-        if (followers.isNotEmpty) {
-          final batch = FirebaseFirestore.instance.batch();
-          for (var followerId in followers) {
-            final notifRef = FirebaseFirestore.instance
-                .collection('users')
-                .doc(followerId)
-                .collection('notifications')
-                .doc();
-            
-            batch.set(notifRef, {
-              'type': 'new_event_from_following',
-              'senderId': uid,
-              'senderName': userName,
-              'content': 'yeni bir etkinlik oluşturdu: ${_titleController.text.trim()}',
-              'relatedId': docRef.id,
-              'timestamp': FieldValue.serverTimestamp(),
-              'isRead': false,
-            });
-          }
-          await batch.commit();
-        }
-      }
-
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(

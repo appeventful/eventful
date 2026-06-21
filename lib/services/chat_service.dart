@@ -117,16 +117,32 @@ class ChatService {
       final senderDoc = await _db.collection('users').doc(_currentUserId).get();
       final senderName = senderDoc.data()?['name'] ?? senderDoc.data()?['username'] ?? 'Bir kullanıcı';
       
-      await NotificationService.sendNotification(
-        recipientId: otherUserId,
-        title: senderName,
-        body: text,
-        data: {
-          'type': 'chat_message',
-          'senderId': _currentUserId,
-          'chatId': chatId,
-        },
-      );
+      final chatDoc = await _db.collection('chats').doc(chatId).get();
+      final String status = chatDoc.data()?['status'] ?? 'accepted';
+
+      if (status == 'pending') {
+        await NotificationService.sendNotification(
+          recipientId: otherUserId,
+          title: 'Yeni Mesaj İsteği 📩',
+          body: '$senderName size bir mesaj isteği gönderdi.',
+          data: {
+            'type': 'chat_request',
+            'senderId': _currentUserId,
+            'chatId': chatId,
+          },
+        );
+      } else {
+        await NotificationService.sendNotification(
+          recipientId: otherUserId,
+          title: senderName,
+          body: text,
+          data: {
+            'type': 'chat_message',
+            'senderId': _currentUserId,
+            'chatId': chatId,
+          },
+        );
+      }
     } catch (e) {
       debugPrint("Bildirim gönderme hatası: $e");
     }

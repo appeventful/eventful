@@ -91,6 +91,7 @@ class NotificationService {
     // 5. Handle foreground notifications
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       debugPrint("Foreground message received: ${message.notification?.title}");
+      debugPrint("Message data: ${message.data}");
       _showLocalNotification(message);
     });
   }

@@ -8,6 +8,7 @@ import 'community_detail_screen.dart';
 import '../services/chat_service.dart';
 import '../models/user_model.dart';
 import '../services/notification_service.dart';
+import '../services/comment_service.dart';
 
 class ChatScreen extends StatefulWidget {
   final String? receiverId;
@@ -102,6 +103,21 @@ class _ChatScreenState extends State<ChatScreen> {
         'participants': FieldValue.arrayUnion([_currentUserId]),
         'users': FieldValue.arrayUnion([_currentUserId]),
       }, SetOptions(merge: true));
+
+      // Etiketleme Kontrolü
+      try {
+        final commentService = CommentService();
+        await commentService.processMentions(
+          eventId: _chatId,
+          text: text,
+          senderName: messageData['senderName'] as String,
+          senderUid: _currentUserId,
+          isCommunity: true,
+          communityName: widget.chatName,
+        );
+      } catch (e) {
+        debugPrint("Community mention processing error: $e");
+      }
       return;
     }
 
@@ -398,10 +414,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   final chatData = chatSnapshot.data?.data() as Map<String, dynamic>?;
                   
-                  // Veritabanında henüz yoksa veya status alanı boşsa, arkadaşlık/buluşma durumuna göre varsayılanı belirle
+                  // Arkadaşlık veya buluşma durumu varsa, reddedilmiş veya bekleyen olsa bile 'accepted' kabul et
                   String status = chatData?['status'] ?? '';
-                  if (status.isEmpty) {
-                    status = (isFriend || _metBefore) ? 'accepted' : 'pending';
+                  if (isFriend || _metBefore) {
+                    status = 'accepted';
+                  } else if (status.isEmpty) {
+                    status = 'pending';
                   }
 
                   final String initiatedBy = chatData?['initiatedBy'] ?? (status == 'pending' ? _currentUserId : '');
