@@ -2,7 +2,7 @@ name: eventful_app
 description: Eventful - Etkinlik Rehberi
 
 publish_to: 'none'
-version: 2.5.2+32
+version: 2.5.2+33
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
