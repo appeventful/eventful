@@ -200,7 +200,7 @@ class AuthService {
 
   Future<UserCredential?> signInWithApple() async {
     try {
-      final rawNonce = _generateNonce();
+      final rawNonce = generateNonce();
       final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
