@@ -8,7 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
-
+import 'dart:math';
 import '../services/notification_service.dart';
 import '../models/user_model.dart';
 
@@ -221,8 +221,6 @@ class AuthService {
       rethrow;
     }
   }
-
-  import 'dart:math';
 
 String generateNonce([int length = 32]) {
   const charset =
