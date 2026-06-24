@@ -222,11 +222,19 @@ class AuthService {
     }
   }
 
-  String _generateNonce([int length = 32]) {
-    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
-    final random = DateTime.now().millisecondsSinceEpoch;
-    return List.generate(length, (index) => charset[random % charset.length]).join();
-  }
+  import 'dart:math';
+
+String generateNonce([int length = 32]) {
+  const charset =
+      '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+
+  final random = Random.secure();
+
+  return List.generate(
+    length,
+    (_) => charset[random.nextInt(charset.length)],
+  ).join();
+}
 
   String _sha256Nonce(String input) {
     final bytes = utf8.encode(input);
