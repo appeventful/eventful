@@ -8,7 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
-import 'dart:math';
+
 import '../services/notification_service.dart';
 import '../models/user_model.dart';
 
@@ -17,9 +17,9 @@ class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    clientId: kIsWeb || Platform.isIOS 
-      ? '327687814157-fp3229fguetbfjuert5ijg7ur6d9q4k8.apps.googleusercontent.com' 
-      : null,
+    clientId: kIsWeb || Platform.isIOS
+        ? '327687814157-fp3229fguetbfjuert5ijg7ur6d9q4k8.apps.googleusercontent.com'
+        : null,
   );
 
   // Kayıt sırasında alınan geçici veriler
@@ -94,7 +94,7 @@ class AuthService {
 
       Map<String, dynamic> userData = userModel.copyWith(uid: uid, email: email).toMap();
       if (imageUrl != null) userData['profileImage'] = imageUrl;
-      
+
       List<String> initialBadges = List<String>.from(userModel.badges);
       if (isFounder && !initialBadges.contains('founder')) {
         initialBadges.add('founder');
@@ -110,7 +110,7 @@ class AuthService {
 
       // 4. Save to Firestore
       await _firestore.collection('users').doc(uid).set(userData);
-      
+
       // Initialize notifications
       try {
         await NotificationService.initialize();
@@ -200,7 +200,7 @@ class AuthService {
 
   Future<UserCredential?> signInWithApple() async {
     try {
-      final rawNonce = generateNonce();
+      final rawNonce = _generateNonce();
       final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
@@ -222,17 +222,11 @@ class AuthService {
     }
   }
 
-String generateNonce([int length = 32]) {
-  const charset =
-      '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
-
-  final random = Random.secure();
-
-  return List.generate(
-    length,
-    (_) => charset[random.nextInt(charset.length)],
-  ).join();
-}
+  String _generateNonce([int length = 32]) {
+    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = DateTime.now().millisecondsSinceEpoch;
+    return List.generate(length, (index) => charset[random % charset.length]).join();
+  }
 
   String _sha256Nonce(String input) {
     final bytes = utf8.encode(input);
@@ -266,7 +260,7 @@ String generateNonce([int length = 32]) {
 
       Map<String, dynamic> userData = userModel.toMap();
       if (imageUrl != null) userData['profileImage'] = imageUrl;
-      
+
       List<String> initialBadges = List<String>.from(userModel.badges);
       if (isFounder && !initialBadges.contains('founder')) {
         initialBadges.add('founder');
@@ -356,7 +350,7 @@ String generateNonce([int length = 32]) {
       title: 'Yeni Arkadaşlık İsteği',
       body: 'Sizinle arkadaş olmak isteyen biri var!',
       data: {
-        'type': 'friend_request', 
+        'type': 'friend_request',
         'senderId': uid,
         'status': 'pending',
       },
